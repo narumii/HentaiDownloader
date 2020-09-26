@@ -61,7 +61,7 @@ public class NineHentaiDownloader extends Downloader {
 
                 for (int i = 1; i != pages + 1; i++) {
                     if (i != pages + 1)
-                        System.out.print( ( i != pages ? "Downloading (" + i + ") / (" + (i * 100 / pages) + "%)    \r" : "Downloaded.") );
+                        System.out.print( ( i != pages ? "Downloading (" + i + ") / (" + (i * 100 / pages) + "%)\r" : "Downloaded.") );
 
                     final URLConnection connection = new URL(DOWNLOAD.replace("%id%", this.doujinshiId).replace("%index%", String.valueOf(i))).openConnection();
                     connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
