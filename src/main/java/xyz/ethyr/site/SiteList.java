@@ -14,7 +14,7 @@ public enum SiteList {
     NINEHENTAI("https://cdn.9hentai.com/images/%id%/"),
     NHENTAI("");
 
-    final String pattern;
+    private final String pattern;
 
     SiteList(final String pattern) {
         this.pattern = pattern;
