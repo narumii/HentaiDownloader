@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum SiteList {
 
-    GELLBOORU("https://gelbooru.com/index.php?page=dapi&s=post&q=index&pid=" + "%page%" + "&limit="  + "%amount%" + "&tags=" + "%tag%" + "&api_key=" + "%apikey%" + "&user_id=" + "%user%"),
+    GELBOORU("https://gelbooru.com/index.php?page=dapi&s=post&q=index&pid=" + "%page%" + "&limit="  + "%amount%" + "&tags=" + "%tag%" + "&api_key=" + "%apikey%" + "&user_id=" + "%user%"),
     DANBOORU(""),
     YANERE(""),
     LOLISLIFE(""),

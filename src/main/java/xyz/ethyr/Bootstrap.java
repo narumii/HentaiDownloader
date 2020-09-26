@@ -1,12 +1,16 @@
 package xyz.ethyr;
 
+import xyz.ethyr.conventer.impl.NineHentaiDownloader;
+
+import java.io.File;
 import java.util.Scanner;
 
 public class Bootstrap {
 
     public static void main(final String... args) {
-        final Scanner scanner = new Scanner(System.in);
+        final NineHentaiDownloader downloader = new NineHentaiDownloader( new File("lol"), new Scanner(System.in));
 
-        final String site = scanner.next();
+        downloader.parserArguments();
+        downloader.downloadImages();
     }
 }
