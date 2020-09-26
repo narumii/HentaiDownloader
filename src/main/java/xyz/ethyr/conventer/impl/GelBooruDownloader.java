@@ -18,8 +18,4 @@ public class GelBooruDownloader extends Downloader {
     public void downloadImages() {
 
     }
-
-    public void printInfo() {
-
-    }
 }

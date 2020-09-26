@@ -50,8 +50,12 @@ public class NineHentaiDownloader extends Downloader {
                 System.out.println("Doujinshi Pages: " + setPages(Integer.parseInt(element.body().getElementsContainingOwnText("pages").text().split(" ")[0])));
 
                 final File file = new File(this.getDir().getPath() + File.separator + doujinshiName.replace("|", "_"));
-                if (file.exists())
+                if (file.exists()) {
+                    for (final File listFile : file.listFiles())
+                        listFile.delete();
+
                     file.delete();
+                }
 
                 file.mkdirs();
 
@@ -70,10 +74,6 @@ public class NineHentaiDownloader extends Downloader {
 
             System.exit(-1);
         });
-    }
-
-    public void printInfo() {
-
     }
 
     public String setFolderName(final String doujinshiName) {

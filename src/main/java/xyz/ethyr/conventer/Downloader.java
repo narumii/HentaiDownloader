@@ -15,6 +15,4 @@ public abstract class Downloader {
     public abstract void parserArguments();
 
     public abstract void downloadImages();
-
-    public abstract void printInfo();
 }
