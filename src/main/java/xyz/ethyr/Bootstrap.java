@@ -6,5 +6,7 @@ public class Bootstrap {
 
     public static void main(final String... args) {
         final Scanner scanner = new Scanner(System.in);
+
+        final String site = scanner.next();
     }
 }
