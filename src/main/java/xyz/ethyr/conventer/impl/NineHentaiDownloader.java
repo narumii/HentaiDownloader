@@ -29,10 +29,8 @@ public class NineHentaiDownloader extends Downloader {
     public NineHentaiDownloader(final File dir, final Scanner scanner) {
         super(dir, scanner);
 
-        if (dir.exists())
-            dir.delete();
-
-        dir.mkdir();
+        if (!dir.exists())
+            dir.mkdir();
     }
 
     public void parserArguments() {
