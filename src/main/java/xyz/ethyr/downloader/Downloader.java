@@ -3,7 +3,6 @@ package xyz.ethyr.downloader;
 import java.io.File;
 import java.util.Scanner;
 import lombok.Getter;
-import xyz.ethyr.util.FileUtil;
 
 @Getter
 public abstract class Downloader {
@@ -14,7 +13,8 @@ public abstract class Downloader {
     public Downloader(File dir, Scanner scanner) {
         this.dir = dir;
         this.scanner = scanner;
-        FileUtil.deleteAndCreateDirectory(dir);
+        if (!dir.exists())
+            dir.mkdir();
     }
 
     public abstract void downloadImages();

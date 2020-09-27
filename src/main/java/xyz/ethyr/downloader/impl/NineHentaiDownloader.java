@@ -12,6 +12,7 @@ import lombok.Getter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import xyz.ethyr.downloader.Downloader;
+import xyz.ethyr.util.FileUtil;
 
 @Getter
 public class NineHentaiDownloader extends Downloader {
@@ -40,12 +41,10 @@ public class NineHentaiDownloader extends Downloader {
                 System.out.println("Doujinshi Pages: " + doujinshiPages);
 
                 final File file = new File(this.getDir().getPath() + File.separator + doujinshiName.replace("|", "_"));
-                if (!file.exists())
-                    file.mkdir();
-
+                FileUtil.deleteAndCreateDirectory(file);
                 for (int i = 1; i != doujinshiPages + 1; i++) {
                     if (i != doujinshiPages + 1)
-                        System.out.print((i != doujinshiPages ? "Downloading (" + i + ") / (" + (i * 100 / doujinshiPages) + "%)    \r" : "Downloaded.") );
+                        System.out.print((i != doujinshiPages ? "Downloading (" + i + ") / (" + (i * 100 / doujinshiPages) + "%)\r" : "Downloaded.") );
 
                     final URLConnection connection = new URL(String.format(DOWNLOAD_URL, this.doujinshiId, i)).openConnection();
                     connection.setRequestProperty("User-Agent", USER_AGENT);
