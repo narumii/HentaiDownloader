@@ -1,6 +1,6 @@
-package xyz.ethyr.conventer.impl;
+package xyz.ethyr.downloader.impl;
 
-import xyz.ethyr.conventer.Downloader;
+import xyz.ethyr.downloader.Downloader;
 
 import java.io.File;
 import java.util.Scanner;
@@ -11,10 +11,7 @@ public class GelBooruDownloader extends Downloader {
         super(dir, scanner);
     }
 
-    public void parserArguments() {
-
-    }
-
+    @Override
     public void downloadImages() {
 
     }
