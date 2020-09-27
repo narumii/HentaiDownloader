@@ -63,8 +63,8 @@ public class GelBooruDownloader extends Downloader {
     });
 
     imagePages.forEach(
-        (page, images) -> new GelBooruSite(String.format(URL, page, images, StringUtil.join(
-            Arrays.asList(tags.toArray()), "+")), page, images));
+        (page, images) -> urls.add(new GelBooruSite(String.format(URL, page, images, StringUtil.join(
+            Arrays.asList(tags.toArray()), "+")), page, images)));
   }
 
   @Override
