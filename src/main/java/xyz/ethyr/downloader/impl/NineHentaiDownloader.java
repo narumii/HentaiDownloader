@@ -40,7 +40,9 @@ public class NineHentaiDownloader extends Downloader {
                 System.out.println("Doujinshi Pages: " + doujinshiPages);
 
                 final File file = new File(this.getDir().getPath() + File.separator + doujinshiName.replace("|", "_"));
-                file.mkdir();
+                if (!file.exists())
+                    file.mkdir();
+
                 for (int i = 1; i != doujinshiPages + 1; i++) {
                     if (i != doujinshiPages + 1)
                         System.out.print((i != doujinshiPages ? "Downloading (" + i + ") / (" + (i * 100 / doujinshiPages) + "%)    \r" : "Downloaded.") );
