@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import xyz.ethyr.downloader.Downloader;
+import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
 
 import java.io.File;
@@ -12,8 +13,6 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Getter
 public class NineHentaiDownloader extends Downloader {
@@ -32,8 +31,7 @@ public class NineHentaiDownloader extends Downloader {
 
     @Override
     public void downloadImages() {
-        final ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
+        ExecutorUtil.submit(() -> {
             try {
                 final Document element = Jsoup.connect(String.format(MAIN_URL, this.doujinshiId)).get();
                 final String doujinshiName = element.body().getElementById("info").getElementsByTag("h1").text();
@@ -55,8 +53,6 @@ public class NineHentaiDownloader extends Downloader {
             } catch (final Exception e) {
                 e.printStackTrace();
             }
-
-            System.exit(-1);
         });
     }
 }
