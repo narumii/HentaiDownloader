@@ -9,22 +9,18 @@ public class Bootstrap {
 
 
     public static void main(final String... args) {
-        final Map<Integer, Integer> xd = new HashMap<>();
-
-        AtomicInteger ai = new AtomicInteger();
-        int i = 2452 / 1000;
-        IntStream.range(0, i + 1).forEach(x -> {
-            if (i == x) {
-                xd.put(x, 2452 - (ai.get() * 1000));
-            }else {
-                ai.set(x + 1);
-                xd.put(x, 1000);
-            }
+        final Map<Integer, Integer> imagePages = new HashMap<>();
+        final int amount = 353;
+        final int pages = amount / 1000;
+        IntStream.range(0, pages + 1).forEach(page -> {
+            if (pages == page)
+                imagePages.put(page, amount - ((page) * 1000));
+            else
+                imagePages.put(page, 1000);
         });
+        imagePages.forEach((page, images) -> System.out.println(page + " -> " + images));
 
-        xd.forEach((c, b) -> {
-            System.out.println(c + " " + b);
-        });
+
         /*
         final NineHentaiDownloader downloader = new NineHentaiDownloader( new File("lol"), new Scanner(System.in));
 
