@@ -12,7 +12,7 @@ public final class FileUtil {
     }
 
     private static void deleteDirectory(final File file) {
-        for (File file1 : file.listFiles()) {
+        for (final File file1 : file.listFiles()) {
             if (file1.isDirectory())
                 deleteDirectory(file1);
             else
