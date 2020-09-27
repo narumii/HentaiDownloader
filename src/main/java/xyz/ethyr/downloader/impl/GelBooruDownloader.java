@@ -29,6 +29,7 @@ public class GelBooruDownloader extends Downloader {
         }
         ratings = Arrays.asList(scanner.nextLine().split(" "));
         amount = scanner.nextInt();
+
     }
 
     @Override
