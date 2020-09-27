@@ -1,8 +1,9 @@
 package xyz.ethyr.downloader;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.util.Scanner;
-import lombok.Getter;
 
 @Getter
 public abstract class Downloader {
