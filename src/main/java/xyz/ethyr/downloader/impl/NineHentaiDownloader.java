@@ -38,12 +38,12 @@ public class NineHentaiDownloader extends Downloader {
 
                 final File file = new File(this.dir, doujinshiName.replace("|", "_"));
                 FileUtil.deleteAndCreateDirectory(file);
-                for (int i = 1; i != doujinshiPages + 1; i++) {
-                    System.out.print("Downloading " + i + "/" + doujinshiPages + " (" + ((i * 100) / doujinshiPages) + "%)\r");
+                for (int doujinshiPage = 1; doujinshiPage != doujinshiPages + 1; doujinshiPage++) {
+                    System.out.print("Downloading " + doujinshiPage + "/" + doujinshiPages + " (" + ((doujinshiPage * 100) / doujinshiPages) + "%)\r");
 
-                    final URLConnection connection = new URL(String.format(DOWNLOAD_URL, this.doujinshiId, i)).openConnection();
+                    final URLConnection connection = new URL(String.format(DOWNLOAD_URL, this.doujinshiId, doujinshiPage)).openConnection();
                     connection.setRequestProperty("User-Agent", USER_AGENT);
-                    Files.copy(connection.getInputStream(), Paths.get(file.getPath(), i + ".jpg"));
+                    Files.copy(connection.getInputStream(), Paths.get(file.getPath(), doujinshiPage + ".jpg"));
                 }
             } catch (final Exception e) {
                 e.printStackTrace();
