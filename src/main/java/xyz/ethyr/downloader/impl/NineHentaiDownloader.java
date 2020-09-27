@@ -25,9 +25,9 @@ public class NineHentaiDownloader extends Downloader {
     private final String doujinshiId;
 
     public NineHentaiDownloader(final File dir, final Scanner scanner) {
-        super(dir, scanner);
+        super(dir);
         System.out.print("Doujinshi ID: ");
-        this.doujinshiId = String.valueOf(getScanner().nextInt());
+        this.doujinshiId = String.valueOf(scanner.nextInt());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class NineHentaiDownloader extends Downloader {
                 System.out.println("Doujinshi Name: " + doujinshiName);
                 System.out.println("Doujinshi Pages: " + doujinshiPages);
 
-                final File file = new File(this.getDir().getPath() + File.separator + doujinshiName.replace("|", "_"));
+                final File file = new File(this.dir, doujinshiName.replace("|", "_"));
                 FileUtil.deleteAndCreateDirectory(file);
                 for (int i = 1; i != doujinshiPages + 1; i++) {
                     if (i != doujinshiPages + 1)
@@ -50,7 +50,7 @@ public class NineHentaiDownloader extends Downloader {
                     final URLConnection connection = new URL(String.format(DOWNLOAD_URL, this.doujinshiId, i)).openConnection();
                     connection.setRequestProperty("User-Agent", USER_AGENT);
                     connection.connect();
-                    Files.copy(connection.getInputStream(), Paths.get(file.getPath() + File.separator + i + ".jpg"));
+                    Files.copy(connection.getInputStream(), Paths.get(file.getPath(), i + ".jpg"));
                 }
             } catch (final Exception e) {
                 e.printStackTrace();

@@ -1,19 +1,13 @@
 package xyz.ethyr.downloader;
 
-import lombok.Getter;
-
 import java.io.File;
-import java.util.Scanner;
 
-@Getter
 public abstract class Downloader {
 
-    private final File dir;
-    private final Scanner scanner;
+    protected final File dir;
 
-    public Downloader(File dir, Scanner scanner) {
+    public Downloader(File dir) {
         this.dir = dir;
-        this.scanner = scanner;
         if (!dir.exists())
             dir.mkdir();
     }
