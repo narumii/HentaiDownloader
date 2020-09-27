@@ -1,20 +1,17 @@
 package xyz.ethyr.downloader.impl;
 
-import lombok.Getter;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import xyz.ethyr.downloader.Downloader;
-import xyz.ethyr.util.ExecutorUtil;
-import xyz.ethyr.util.FileUtil;
-
 import java.io.File;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import xyz.ethyr.downloader.Downloader;
+import xyz.ethyr.util.ExecutorUtil;
+import xyz.ethyr.util.FileUtil;
 
-@Getter
 public class NineHentaiDownloader extends Downloader {
 
     private static final String MAIN_URL = "https://9hentai.com/g/%s";
@@ -42,9 +39,7 @@ public class NineHentaiDownloader extends Downloader {
                 final File file = new File(this.dir, doujinshiName.replace("|", "_"));
                 FileUtil.deleteAndCreateDirectory(file);
                 for (int i = 1; i != doujinshiPages + 1; i++) {
-                    if (i != doujinshiPages + 1)
-                        System.out.print((i != doujinshiPages ? "Downloading (" + i + ") / (" + (i * 100 / doujinshiPages) + "%)\r" : "Downloaded."));
-
+                    System.out.print("Downloading " + i + "/" + doujinshiPages + " (" + ((i * 100) / doujinshiPages) + "%)\r");
                     final URLConnection connection = new URL(String.format(DOWNLOAD_URL, this.doujinshiId, i)).openConnection();
                     connection.setRequestProperty("User-Agent", USER_AGENT);
                     connection.connect();
