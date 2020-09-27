@@ -40,7 +40,6 @@ public class NineHentaiDownloader extends Downloader {
                 FileUtil.deleteAndCreateDirectory(file);
                 for (int i = 1; i != doujinshiPages + 1; i++) {
                     System.out.print("Downloading " + i + "/" + doujinshiPages + " (" + ((i * 100) / doujinshiPages) + "%)\r");
-
                     final URLConnection connection = new URL(String.format(DOWNLOAD_URL, this.doujinshiId, i)).openConnection();
                     connection.setRequestProperty("User-Agent", USER_AGENT);
                     Files.copy(connection.getInputStream(), Paths.get(file.getPath(), i + ".jpg"));
