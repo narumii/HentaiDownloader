@@ -21,5 +21,4 @@ public final class FileUtil {
 
     file.delete();
   }
-
 }
