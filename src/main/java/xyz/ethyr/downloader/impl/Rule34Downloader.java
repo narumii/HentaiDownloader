@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,29 +21,27 @@ import org.jsoup.internal.StringUtil;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import xyz.ethyr.downloader.Downloader;
+
 import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
 import xyz.ethyr.xd.RegexParser;
 import xyz.ethyr.xd.RegexParser.ParserObject;
 
-public class GelBooruDownloader extends Downloader {
+public class Rule34Downloader extends Downloader {
 
   private static final RegexParser REGEX_PARSER = new RegexParser();
   private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
-  private static final String URL =
-      "https://gelbooru.com/index.php?page=dapi&s=post&q=index&pid=" + "%s" + "&limit=" + "%s"
-          + "&tags=" + "%s"
-          + "&api_key=16d7195f94cd43f7680c2310ec6788f05a6a6e06fbaad1f0e6c55fd284c57f5a&user_id=629393";
-  private final List<GelBooruSite> urls = new ArrayList<>();
+  private static final String URL = "https://rule34.xxx/index.php?page=dapi&s=post&q=index&limit=%s&pid=%s&tags=%s";
+  private final List<Rule34Site> urls = new ArrayList<>();
   private final int amount;
 
-  private Elements gelbooruElement;
+  private Elements ruleElement;
 
   private final ParserObject ratings;
   private final ParserObject blacklistedTags;
   private final String[] tags;
 
-  public GelBooruDownloader(final File dir, final Scanner scanner) {
+  public Rule34Downloader(final File dir, final Scanner scanner) {
     super(dir);
 
     System.out.print("Image tags: ");
@@ -58,18 +57,23 @@ public class GelBooruDownloader extends Downloader {
     amount = scanner.nextInt();
 
     final Map<Integer, Integer> imagePages = new HashMap<>();
-    final int pages = amount / 1000;
+    final int pages = amount / 100;
     IntStream.range(0, pages + 1).forEach(page -> {
-        if (pages == page) {
-            imagePages.put(page, amount - ((page) * 1000));
-        } else {
-            imagePages.put(page, 1000);
-        }
+      if (pages == page) {
+        imagePages.put(page, amount - ((page) * 100));
+      } else {
+        imagePages.put(page, 100);
+      }
     });
 
     imagePages.forEach(
-        (page, images) -> urls.add(new GelBooruSite(String.format(URL, page, images, StringUtil.join(
-            Arrays.asList(tags), "+")), page, images)));
+        (page, images) -> {
+          if (images > 0)
+            urls.add(new Rule34Site(String.format(URL, images, page, StringUtil.join(
+                Arrays.asList(tags), "+")), page, images));
+        });
+
+    urls.forEach(url -> System.out.println(url.url));
   }
 
   @Override
@@ -77,19 +81,19 @@ public class GelBooruDownloader extends Downloader {
     ExecutorUtil.submit(() -> urls.forEach(site -> {
       try {
         final File file = new File(this.dir, FileUtil.replace(Arrays.toString(tags) + " -" + blacklistedTags.getString()));
-          if (!file.exists()) {
-              file.mkdirs();
-          }
+        if (!file.exists()) {
+          file.mkdirs();
+        }
 
-        gelbooruElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
+        ruleElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
         for (int i = 0; i < site.getAmount(); i++) {
           System.out.print(
               "Downloading " + (i + 1) + "/" + site.getAmount() + " (" + (((i + 1) * 100)
                   / site.getAmount()) + "%)\r");
           final Image image = getImage(i);
-            if (image == null) {
-                continue;
-            }
+          if (image == null) {
+            continue;
+          }
 
           final URLConnection connection = new URL(image.getDownloadURL()).openConnection();
           connection.setRequestProperty("User-Agent", USER_AGENT);
@@ -106,7 +110,7 @@ public class GelBooruDownloader extends Downloader {
 
   private Image getImage(final int image) {
     try {
-      final Element post = gelbooruElement.get(image);
+      final Element post = ruleElement.get(image);
       final String tags = post.attr("tags");
       final String rating = post.attr("rating");
       if (ratings.getPattern().matcher(rating).matches() && !(!blacklistedTags.getString().isEmpty()
@@ -130,7 +134,7 @@ public class GelBooruDownloader extends Downloader {
 
   @AllArgsConstructor
   @Getter
-  private class GelBooruSite {
+  private class Rule34Site {
 
     private final String url;
     private final int page;
