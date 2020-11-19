@@ -64,7 +64,7 @@ public class NekosLifeDownloader extends Downloader {
                       "nl_" + RandomStringUtils.randomAlphabetic(15) + "." + fileUrl
                           .split("\\.")[3]));
         }
-      } catch (final Exception e) {
+      } catch (Exception e) {
       }
     });
   }

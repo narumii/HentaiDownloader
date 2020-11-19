@@ -24,7 +24,7 @@ public class SiteUtil {
     return map;
   }
 
-  public static JSONObject toJson(final String url) throws IOException {
+  public static JSONObject toJson(String url) throws IOException {
     return new JSONObject(
         Jsoup.connect(url).userAgent(USER_AGENT).ignoreContentType(true).execute().body());
   }

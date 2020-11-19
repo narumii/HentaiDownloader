@@ -77,7 +77,7 @@ public class Rule34Downloader extends Downloader {
           System.out.print(
               "Downloading " + (i + 1) + "/" + site.getAmount() + " (" + (((i + 1) * 100)
                   / site.getAmount()) + "%)\r");
-          final Image image = getImage(i);
+          Image image = getImage(i);
           if (image == null)
             continue;
 

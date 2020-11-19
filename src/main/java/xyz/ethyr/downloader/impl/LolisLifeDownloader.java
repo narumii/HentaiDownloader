@@ -58,7 +58,7 @@ public class LolisLifeDownloader extends Downloader {
                       "ll_" + RandomStringUtils.randomAlphabetic(15) + "." + fileUrl
                           .split("\\.")[3]));
         }
-      } catch (final Exception e) {
+      } catch (Exception e) {
       }
     });
   }
