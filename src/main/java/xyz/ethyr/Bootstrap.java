@@ -1,19 +1,17 @@
 package xyz.ethyr;
 
-import java.io.File;
-import java.util.Scanner;
-import xyz.ethyr.downloader.impl.GelBooruDownloader;
-import xyz.ethyr.downloader.impl.NineHentaiDownloader;
-import xyz.ethyr.downloader.impl.Rule34Downloader;
+
+import java.io.IOException;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
 public class Bootstrap {
 
-
-  public static void main(final String... args) {
-    //inal NineHentaiDownloader downloader = new NineHentaiDownloader(new File("lol"), new Scanner(System.in));
-
-    final Rule34Downloader downloader = new Rule34Downloader(new File("lol"),
-       new Scanner(System.in));
-    downloader.downloadImages();
+  public static void main(String... args) throws IOException {
+    final String xd = Jsoup.connect("https://nekos.life/api/v2/img/lewd").ignoreContentType(true)
+        .execute().body();
+    System.out.println(xd);
+    final JSONObject url = new JSONObject(xd);
+    System.out.println(url.get("url"));
   }
 }

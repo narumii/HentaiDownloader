@@ -4,7 +4,8 @@ import java.io.File;
 
 public final class FileUtil {
 
-  public static String replace(final String string) {
+  //XD
+  public static String replace(String string) {
     return string
         .replace("[", "")
         .replace("]", "")
@@ -19,23 +20,22 @@ public final class FileUtil {
         .replace("*", "");
   }
 
-  public static void deleteAndCreateDirectory(final File file) {
-      if (file.exists()) {
-          deleteDirectory(file);
-      }
+  public static void deleteAndCreateDirectory(File file) {
+    if (file.exists()) {
+      deleteDirectory(file);
+    }
 
     file.mkdir();
   }
 
-  private static void deleteDirectory(final File file) {
-    for (final File file1 : file.listFiles()) {
-        if (file1.isDirectory()) {
-            deleteDirectory(file1);
-        } else {
-            file1.delete();
-        }
+  private static void deleteDirectory(File file) {
+    for (File parentFile : file.listFiles()) {
+      if (parentFile.isDirectory()) {
+        deleteDirectory(parentFile);
+      } else {
+        parentFile.delete();
+      }
     }
-
     file.delete();
   }
 }

@@ -4,13 +4,12 @@ import java.io.File;
 
 public abstract class Downloader {
 
-  protected final File dir;
+  protected File dir;
 
   public Downloader(File dir) {
     this.dir = dir;
-    if (!dir.exists()) {
+    if (!dir.exists())
       dir.mkdir();
-    }
   }
 
   public abstract void downloadImages();
