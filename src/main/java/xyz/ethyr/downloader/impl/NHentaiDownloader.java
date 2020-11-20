@@ -22,8 +22,13 @@ public class NHentaiDownloader extends Downloader {
 
   public NHentaiDownloader(File dir, Scanner scanner) {
     super(dir);
-    System.out.print("Doujinshi ID: ");
-    doujinshiId = String.valueOf(scanner.nextInt());
+    System.out.print("Doujinshi [ID/Link]: ");
+    String input = scanner.next();
+    if (input.startsWith("https://nhentai.to/g/") || input.startsWith("nhentai.to/g/")) {
+      doujinshiId = input.split("/g/")[1];
+    } else {
+      doujinshiId = input;
+    }
   }
 
   @Override

@@ -22,7 +22,7 @@ public class NineHentaiDownloader extends Downloader {
 
   public NineHentaiDownloader(File dir, Scanner scanner) {
     super(dir);
-    System.out.print("Doujinshi ID: ");
+    System.out.print("Doujinshi [ID/Link]: ");
     doujinshiId = String.valueOf(scanner.nextInt());
   }
 
