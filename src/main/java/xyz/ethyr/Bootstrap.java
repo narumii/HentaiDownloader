@@ -1,6 +1,5 @@
 package xyz.ethyr;
 
-
 import java.io.IOException;
 
 public class Bootstrap {
