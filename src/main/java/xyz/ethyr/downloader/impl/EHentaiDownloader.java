@@ -35,17 +35,21 @@ public class EHentaiDownloader extends Downloader {
     System.out.print("All images [true/false]: ");
     all = scanner.nextBoolean();
 
-    if (!link.startsWith("https://e-hentai.org/") && link.startsWith("e-hentai.org/")) {
+    if (!link.startsWith("https://e-hentai.org/g/") && link.startsWith("e-hentai.org/g/")) {
       System.out.println("Invalid e-hentai link");
       System.exit(0);
     }
+
+    link += link.endsWith("/") ? "?p=%s" : "/p=%s";
   }
 
   @Override
   public void downloadImages() {
     ExecutorUtil.submit(() -> {
       try {
-        Document element = Jsoup.connect(link).get();
+        Document element = Jsoup.connect(String.format(link, 0))
+            .cookie("nw", "1")
+            .get();
         String name = element.getElementById("gn").getElementsByTag("h1").text();
 
         int images = Integer
@@ -74,9 +78,11 @@ public class EHentaiDownloader extends Downloader {
                 .copy(connection.getInputStream(),
                     Paths.get(file.getPath(), i + FileUtil.replace(name) + ".jpg"));
           } catch (Exception e) {
+            e.printStackTrace();
           }
         }
       } catch (Exception e) {
+        e.printStackTrace();
       }
     });
   }
@@ -88,7 +94,8 @@ public class EHentaiDownloader extends Downloader {
 
       for (int i = 1; i < pages; i++) {
         document = Jsoup
-            .connect(String.format((link.endsWith("/") ? link + "?p=%s" : link + "/?p=%s"), i))
+            .connect(String.format(link, i))
+            .cookie("nw", "1")
             .get();
         document.getElementsByClass("gdtm")
             .forEach(element -> viewUrls.add(element.select("a").attr("href")));
