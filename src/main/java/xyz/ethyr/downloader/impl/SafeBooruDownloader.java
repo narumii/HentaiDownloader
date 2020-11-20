@@ -23,22 +23,21 @@ import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
 import xyz.ethyr.util.SiteUtil;
 
-public class Rule34Downloader extends Downloader {
+public class SafeBooruDownloader extends Downloader {
 
   private static final RegexParser REGEX_PARSER = new RegexParser();
   private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
-  private static final String URL = "https://rule34.xxx/index.php?page=dapi&s=post&q=index&limit=%s&pid=%s&tags=%s";
+  private static final String URL = "https://safebooru.org/index.php?page=dapi&s=post&q=index&limit=%s&pid=%s&tags=%s";
 
   private List<Site> urls = new ArrayList<>();
   private int amount;
 
-  private Elements ruleElement;
+  private Elements gelbooruElement;
 
-  private ParserObject ratings;
   private ParserObject blacklistedTags;
   private String[] tags;
 
-  public Rule34Downloader(File dir, Scanner scanner) {
+  public SafeBooruDownloader(File dir, Scanner scanner) {
     super(dir);
 
     System.out.print("Image tags: ");
@@ -47,13 +46,10 @@ public class Rule34Downloader extends Downloader {
     System.out.print("Blacklisted tags: ");
     blacklistedTags = REGEX_PARSER.parse(scanner.nextLine());
 
-    System.out.print("Ratings (s q e): ");
-    ratings = REGEX_PARSER.parse(scanner.nextLine());
-
     System.out.print("Amount: ");
     amount = scanner.nextInt();
 
-    Map<Integer, Integer> pages = SiteUtil.parsePages(amount, 100);
+    Map<Integer, Integer> pages = SiteUtil.parsePages(amount, 1000);
     urls.addAll(SiteUtil.createSites(pages, URL, tags));
   }
 
@@ -63,24 +59,27 @@ public class Rule34Downloader extends Downloader {
       try {
         File file = new File(this.dir,
             FileUtil.replace(Arrays.toString(tags) + " -" + blacklistedTags.getString()));
-        if (!file.exists())
+        if (!file.exists()) {
           file.mkdirs();
+        }
 
-        ruleElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
+        gelbooruElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
         for (int i = 0; i < site.getAmount(); i++) {
           System.out.print(
               "Downloading " + (i + 1) + "/" + site.getAmount() + " (" + (((i + 1) * 100)
                   / site.getAmount()) + "%)\r");
+
           Image image = getImage(i);
-          if (image == null)
+          if (image == null) {
             continue;
+          }
 
           URLConnection connection = new URL(image.getDownloadURL()).openConnection();
           connection.setRequestProperty("User-Agent", USER_AGENT);
           String extension = image.getDownloadURL().split("\\.")[3];
           Files
               .copy(connection.getInputStream(),
-                  Paths.get(file.getPath(), "r34_" + image.getName() + "." + extension));
+                  Paths.get(file.getPath(), "sb_" + image.getName() + "." + extension));
         }
       } catch (Exception e) {
         e.printStackTrace();
@@ -90,10 +89,9 @@ public class Rule34Downloader extends Downloader {
 
   private Image getImage(int image) {
     try {
-      Element post = ruleElement.get(image);
+      Element post = gelbooruElement.get(image);
       String tags = post.attr("tags");
-      String rating = post.attr("rating");
-      if (ratings.getPattern().matcher(rating).matches() && !(!blacklistedTags.getString().isEmpty()
+      if (!(!blacklistedTags.getString().isEmpty()
           && blacklistedTags.getPattern().matcher(tags).find())) {
         return new Image(post.attr("file_url"),
             image + "_" + RandomStringUtils.randomAlphabetic(10));

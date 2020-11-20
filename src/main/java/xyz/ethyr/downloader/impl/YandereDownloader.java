@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Scanner;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jsoup.Jsoup;
-import org.jsoup.internal.StringUtil;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import xyz.ethyr.booru.Image;
@@ -55,9 +54,7 @@ public class YandereDownloader extends Downloader {
     amount = scanner.nextInt();
 
     Map<Integer, Integer> pages = SiteUtil.parsePages(amount, 1000);
-    pages.forEach(
-        (page, images) -> urls.add(new Site(String.format(URL, page, images, StringUtil.join(
-            Arrays.asList(tags), "+")), page, images)));
+    urls.addAll(SiteUtil.createSites(pages, URL, tags));
   }
 
   @Override

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Scanner;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jsoup.Jsoup;
-import org.jsoup.internal.StringUtil;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import xyz.ethyr.booru.Image;
@@ -29,7 +28,7 @@ public class GelBooruDownloader extends Downloader {
   private static final RegexParser REGEX_PARSER = new RegexParser();
   private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
   private static final String URL =
-      "https://gelbooru.com/index.php?page=dapi&s=post&q=index&pid=" + "%s" + "&limit=" + "%s"
+      "https://gelbooru.com/index.php?page=dapi&s=post&q=index&limit=%s&pid=%s"
           + "&tags=" + "%s"
           + "&api_key=16d7195f94cd43f7680c2310ec6788f05a6a6e06fbaad1f0e6c55fd284c57f5a&user_id=629393";
 
@@ -58,9 +57,7 @@ public class GelBooruDownloader extends Downloader {
     amount = scanner.nextInt();
 
     Map<Integer, Integer> pages = SiteUtil.parsePages(amount, 1000);
-    pages.forEach(
-        (page, images) -> urls.add(new Site(String.format(URL, page, images, StringUtil.join(
-            Arrays.asList(tags), "+")), page, images)));
+    urls.addAll(SiteUtil.createSites(pages, URL, tags));
   }
 
   @Override
