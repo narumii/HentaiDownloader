@@ -28,7 +28,7 @@ public class Bootstrap {
       String name = scanner.next();
 
       System.out.print("Downloading threads: \r");
-      int threads = scanner.nextInt();
+      int threads = scanner.nextInt(); //TODO: IN FUTURE
 
       System.out.print("Images dir: \r");
       String dir = scanner.next();
