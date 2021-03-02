@@ -23,7 +23,12 @@ public class NineHentaiDownloader extends Downloader {
   public NineHentaiDownloader(File dir, Scanner scanner) {
     super(dir);
     System.out.print("Doujinshi [ID/Link]: ");
-    doujinshiId = String.valueOf(scanner.nextInt());
+    String input = scanner.next();
+    if (input.startsWith("https://9hentai") || input.startsWith("9hentai")) {
+      doujinshiId = input.split("/g/")[1].replace("/", "");
+    } else {
+      doujinshiId = input;
+    }
   }
 
   @Override
@@ -54,6 +59,7 @@ public class NineHentaiDownloader extends Downloader {
           }
         }
       } catch (Exception e) {
+        e.printStackTrace();
       }
       System.out.print(String.format("Downloaded %s doujinshi\r", doujinshiName));
       setDownloading(false);

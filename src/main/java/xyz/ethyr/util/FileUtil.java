@@ -29,7 +29,7 @@ public final class FileUtil {
       deleteDirectory(file);
     }
 
-    file.mkdir();
+    file.mkdirs();
   }
 
   private static void deleteDirectory(File file) {

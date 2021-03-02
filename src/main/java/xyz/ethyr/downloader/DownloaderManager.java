@@ -10,7 +10,7 @@ public class DownloaderManager {
   public Downloader newDownloader(String name, File dir, Scanner scanner) throws Exception {
     Class<?> downloaderClass = getDownloader(name);
     if (downloaderClass == null) {
-      throw new NullPointerException();
+      return null;
     }
 
     return (Downloader) downloaderClass.getDeclaredConstructors()[0].newInstance(dir, scanner);

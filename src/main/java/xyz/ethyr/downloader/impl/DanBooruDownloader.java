@@ -83,10 +83,11 @@ public class DanBooruDownloader extends Downloader {
 
           URLConnection connection = new URL(image.getDownloadURL()).openConnection();
           connection.setRequestProperty("User-Agent", USER_AGENT);
-          String extension = image.getDownloadURL().split("\\.")[3];
+          String[] extension = image.getDownloadURL().split("\\.");
           Files
               .copy(connection.getInputStream(),
-                  Paths.get(file.getPath(), "db_" + image.getName() + "." + extension));
+                  Paths.get(file.getPath(),
+                      "db_" + image.getName() + "." + extension[extension.length - 1]));
         }
         index[0]++;
       } catch (Exception e) {

@@ -84,9 +84,10 @@ public class GelBooruDownloader extends Downloader {
 
             URLConnection connection = SiteUtil.openConnection(image.getDownloadURL());
             if (connection != null) {
-              String extension = image.getDownloadURL().split("\\.")[3];
+              String[] extension = image.getDownloadURL().split("\\.");
               Files.copy(connection.getInputStream(),
-                  Paths.get(file.getPath(), "gb_" + image.getName() + "." + extension));
+                  Paths.get(file.getPath(),
+                      "gb_" + image.getName() + "." + extension[extension.length - 1]));
             }
           }
         } catch (Exception e) {

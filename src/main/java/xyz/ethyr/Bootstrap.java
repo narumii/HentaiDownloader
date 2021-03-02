@@ -37,7 +37,9 @@ public class Bootstrap {
       scanner.nextLine(); //JAVA THE BEST NO DOUBT
 
       downloader = manager.newDownloader(name, new File(dir), scanner);
-      downloader.downloadImages();
+      if (downloader != null) {
+        downloader.downloadImages();
+      }
 
       System.out.println();
       scanner.nextLine(); //JAVA THE BEST NO DOUBT

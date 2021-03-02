@@ -71,7 +71,7 @@ public class EHentaiDownloader extends Downloader {
           URLConnection connection = SiteUtil.openConnection(fileUrls.get(i));
           if (connection != null) {
             Files.copy(connection.getInputStream(),
-                Paths.get(file.getPath(), i + FileUtil.replace(name) + ".jpg"));
+                Paths.get(file.getPath(), i + ".jpg"));
           }
         }
       } catch (Exception e) {

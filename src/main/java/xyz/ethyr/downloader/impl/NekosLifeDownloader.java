@@ -30,7 +30,7 @@ public class NekosLifeDownloader extends Downloader {
 
     System.out.print("Tag: ");
     tag = scanner.next();
-    if (checkTag(tag)) {
+    if (!checkTag(tag)) {
       System.out.println("Available tags: " + String.join(", ", ENDPOINTS));
       System.exit(0);
     }
@@ -54,11 +54,12 @@ public class NekosLifeDownloader extends Downloader {
               i + 1, amount, (((i + 1) * 100) / amount), "%"));
 
           String fileUrl = SiteUtil.toJson(String.format(URL, tag)).getString("url");
-          String extension = fileUrl.split("\\.")[3];
+          String[] extension = fileUrl.split("\\.");
           URLConnection connection = SiteUtil.openConnection(fileUrl);
           if (connection != null) {
             Files.copy(connection.getInputStream(), Paths.get(file.getPath(),
-                "nl_" + RandomStringUtils.randomAlphabetic(15) + "." + extension));
+                "nl_" + RandomStringUtils.randomAlphabetic(15) + "." + extension[extension.length
+                    - 1]));
           }
         }
       } catch (Exception e) {

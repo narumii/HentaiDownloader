@@ -14,8 +14,8 @@ import xyz.ethyr.util.SiteUtil;
 
 public class NHentaiDownloader extends Downloader {
 
-  private static final String MAIN_URL = "https://nhentai.to/g/%s";
-  private static final String VIEW_URL = "https://nhentai.to/g/%s/%s";
+  private static final String MAIN_URL = "https://nhentai.net/g/%s";
+  private static final String VIEW_URL = "https://nhentai.net/g/%s/%s";
 
   private final String doujinshiId;
   private String doujinshiName;
@@ -24,8 +24,8 @@ public class NHentaiDownloader extends Downloader {
     super(dir);
     System.out.print("Doujinshi [ID/Link]: ");
     String input = scanner.next();
-    if (input.startsWith("https://nhentai.to/g/") || input.startsWith("nhentai.to/g/")) {
-      doujinshiId = input.split("/g/")[1];
+    if (input.startsWith("https://nhentai") || input.startsWith("nhentai")) {
+      doujinshiId = input.split("/g/")[1].replace("/", "");
     } else {
       doujinshiId = input;
     }
@@ -40,7 +40,7 @@ public class NHentaiDownloader extends Downloader {
         doujinshiName = element.body().getElementById("info").getElementsByTag("h1")
             .text();
         int doujinshiPages = Integer
-            .parseInt(element.body().getElementsContainingOwnText("pages").text().split(" ")[0]);
+            .parseInt(element.body().getElementsByClass("name").last().ownText());
 
         System.out.println("Doujinshi Name: " + doujinshiName);
         System.out.println("Doujinshi Pages: " + doujinshiPages);
@@ -62,6 +62,7 @@ public class NHentaiDownloader extends Downloader {
           }
         }
       } catch (Exception e) {
+        e.printStackTrace();
       }
       System.out.print(String.format("Downloaded %s doujinshi\r", doujinshiName));
       setDownloading(false);
