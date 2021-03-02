@@ -12,7 +12,7 @@ Especially for Vexio and Out
 - NekosLife: http://nekos.life/
 - NHentai: https://nhentai.net/
 - 9Hentai: https://9hentai.com/
-- EHnetai: https://e-hentai.org/
+- EHentai: https://e-hentai.org/
 
 ### TODO
 - Danbooru
