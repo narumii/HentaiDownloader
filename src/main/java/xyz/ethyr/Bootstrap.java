@@ -33,7 +33,7 @@ public class Bootstrap {
       String dir = scanner.next();
 
       System.out.println();
-      scanner.nextLine(); //JAVA THE BEST NO DOUBT
+      scanner.nextLine(); //JAVA IS THE BEST, NO DOUBT
 
       downloaderOptional = DownloaderFactory.create(name, new File(dir), scanner);
       downloaderOptional.ifPresentOrElse(Downloader::downloadImages, () -> {
