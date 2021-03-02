@@ -9,7 +9,7 @@ public final class FileUtil {
   }
 
   //XD
-  public static String replace(String string) {
+  private static String replace(String string) {
     return string
         .replace("[", "")
         .replace("]", "")

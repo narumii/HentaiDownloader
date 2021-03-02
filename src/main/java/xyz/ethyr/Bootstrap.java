@@ -2,23 +2,22 @@ package xyz.ethyr;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Scanner;
 import xyz.ethyr.downloader.Downloader;
-import xyz.ethyr.downloader.DownloaderEnum;
-import xyz.ethyr.downloader.DownloaderManager;
+import xyz.ethyr.downloader.DownloaderFactory;
+import xyz.ethyr.downloader.DownloaderType;
 
 public class Bootstrap {
 
-  private static final DownloaderManager manager = new DownloaderManager();
-  private static Downloader downloader;
-
-  public static void main(String... args) throws Exception {
+  public static void main(String... args) {
+    Optional<Downloader> downloaderOptional = Optional.empty();
     Scanner scanner = new Scanner(System.in);
     System.out.println("HentaiDownloader created by narumi ( https://github.com/narumii )");
-    System.out.println("Supported sites: " + Arrays.toString(DownloaderEnum.values()) + "\n");
+    System.out.println("Supported sites: " + Arrays.toString(DownloaderType.values()) + "\n");
 
     do {
-      if (downloader != null && downloader.isDownloading()) {
+      if (downloaderOptional.isPresent() && downloaderOptional.get().isDownloading()) {
         continue;
       }
 
@@ -36,13 +35,11 @@ public class Bootstrap {
       System.out.println();
       scanner.nextLine(); //JAVA THE BEST NO DOUBT
 
-      downloader = manager.newDownloader(name, new File(dir), scanner);
-      if (downloader != null) {
-        downloader.downloadImages();
-      }
-
-      System.out.println();
-      scanner.nextLine(); //JAVA THE BEST NO DOUBT
+      downloaderOptional = DownloaderFactory.create(name, new File(dir), scanner);
+      downloaderOptional.ifPresentOrElse(Downloader::downloadImages, () -> {
+        System.out.printf("No downloader by name %s was found.", name);
+        scanner.reset();
+      });
     } while (true);
   }
 }

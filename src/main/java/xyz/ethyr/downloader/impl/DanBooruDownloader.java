@@ -17,8 +17,8 @@ import org.jsoup.select.Elements;
 import xyz.ethyr.booru.Image;
 import xyz.ethyr.booru.Site;
 import xyz.ethyr.downloader.Downloader;
-import xyz.ethyr.parser.RegexParser;
-import xyz.ethyr.parser.RegexParser.ParsedObject;
+import xyz.ethyr.util.RegexParser;
+import xyz.ethyr.util.RegexParser.RegexInfo;
 import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
 import xyz.ethyr.util.SiteUtil;
@@ -27,18 +27,15 @@ import xyz.ethyr.util.SiteUtil;
 //TODO: FIX THIS SHIT
 public class DanBooruDownloader extends Downloader {
 
-  private static final RegexParser REGEX_PARSER = new RegexParser();
   private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
   private static final String URL = "https://danbooru.donmai.us/posts.xml?limit=%s&page=%s&tag=%s";
 
   private final List<Site> urls = new ArrayList<>();
-  private final int amount;
+  private final RegexInfo ratings;
+  private final RegexInfo blacklistedTags;
+  private final String[] tags;
 
   private Elements gelbooruElement;
-
-  private final ParsedObject ratings;
-  private final ParsedObject blacklistedTags;
-  private final String[] tags;
 
   public DanBooruDownloader(File dir, Scanner scanner) {
     super(dir);
@@ -47,13 +44,13 @@ public class DanBooruDownloader extends Downloader {
     tags = scanner.nextLine().split(" ");
 
     System.out.print("Blacklisted tags: ");
-    blacklistedTags = REGEX_PARSER.parse(scanner.nextLine());
+    blacklistedTags = RegexParser.parse(scanner.nextLine());
 
     System.out.print("Ratings (s q e): ");
-    ratings = REGEX_PARSER.parse(scanner.nextLine());
+    ratings = RegexParser.parse(scanner.nextLine());
 
     System.out.print("Amount: ");
-    amount = scanner.nextInt();
+    int amount = scanner.nextInt();
 
     Map<Integer, Integer> pages = SiteUtil.parsePages(amount, 1000);
     urls.addAll(SiteUtil.createSites(pages, URL, tags));
@@ -64,17 +61,16 @@ public class DanBooruDownloader extends Downloader {
     int[] index = {0};
     ExecutorUtil.submit(() -> urls.forEach(site -> {
       try {
-        File file = new File(this.dir,
-            FileUtil.replace(Arrays.toString(tags) + blacklistedTags.getString(" - ")));
+        File file = FileUtil.createFile(dir, Arrays.toString(tags) + blacklistedTags.getString(" - "));
         if (!file.exists()) {
           file.mkdirs();
         }
 
         gelbooruElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
         for (int i = 0; i < site.getAmount(); i++) {
-          System.out.print(String.format("Downloading: Page: %s/%s, Image: %s/%s - (%s%s)\r",
+          System.out.printf("Downloading: Page: %s/%s, Image: %s/%s - (%s%s)\r",
               index[0] + 1, urls.size(), i + 1, site.getAmount(),
-              ((i + 1) * 100) / site.getAmount(), "%"));
+              ((i + 1) * 100) / site.getAmount(), "%");
 
           Image image = getImage(i);
           if (image == null) {

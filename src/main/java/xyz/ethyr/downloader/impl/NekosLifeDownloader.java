@@ -8,6 +8,7 @@ import java.util.Scanner;
 import org.apache.commons.lang3.RandomStringUtils;
 import xyz.ethyr.downloader.Downloader;
 import xyz.ethyr.util.ExecutorUtil;
+import xyz.ethyr.util.FileUtil;
 import xyz.ethyr.util.SiteUtil;
 
 public class NekosLifeDownloader extends Downloader {
@@ -44,14 +45,14 @@ public class NekosLifeDownloader extends Downloader {
     setDownloading(true);
     ExecutorUtil.submit(() -> {
       try {
-        File file = new File(this.dir, tag);
+        File file = FileUtil.createFile(dir, tag);
         if (!file.exists()) {
           file.mkdirs();
         }
 
         for (int i = 0; i < amount; i++) {
-          System.out.print(String.format("Downloading | Image: %s/%s - (%s%s)\r",
-              i + 1, amount, (((i + 1) * 100) / amount), "%"));
+          System.out.printf("Downloading | Image: %s/%s - (%s%s)\r",
+              i + 1, amount, (((i + 1) * 100) / amount), "%");
 
           String fileUrl = SiteUtil.toJson(String.format(URL, tag)).getString("url");
           String[] extension = fileUrl.split("\\.");
@@ -65,7 +66,7 @@ public class NekosLifeDownloader extends Downloader {
       } catch (Exception e) {
         e.printStackTrace();
       }
-      System.out.print(String.format("Downloaded %s images with %s tag\r", amount, tag));
+      System.out.printf("Downloaded %s images with %s tag\r", amount, tag);
       setDownloading(false);
     });
   }

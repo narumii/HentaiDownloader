@@ -20,6 +20,7 @@ public class EHentaiDownloader extends Downloader {
   private final List<String> viewUrls = new ArrayList<>();
   private final List<String> fileUrls = new ArrayList<>();
   private final boolean all;
+
   private String link;
   private String name;
   private int pages;
@@ -61,12 +62,12 @@ public class EHentaiDownloader extends Downloader {
         createViewUrls(element);
         createFileUrls();
 
-        File file = new File(this.dir, FileUtil.replace(name));
+        File file = FileUtil.createFile(dir, name);
         FileUtil.deleteAndCreateDirectory(file);
 
         for (int i = 0; i < fileUrls.size(); i++) {
-          System.out.print(String.format("Downloading | Image: %s/%s - (%s%s)\r",
-              i + 1, all ? images : 1, ((i + 1) * 100) / (all ? images : 1), "%"));
+          System.out.printf("Downloading | Image: %s/%s - (%s%s)\r",
+              i + 1, all ? images : 1, ((i + 1) * 100) / (all ? images : 1), "%");
 
           URLConnection connection = SiteUtil.openConnection(fileUrls.get(i));
           if (connection != null) {

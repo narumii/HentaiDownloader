@@ -1,21 +1,20 @@
-package xyz.ethyr.parser;
+package xyz.ethyr.util;
 
 import java.util.regex.Pattern;
 
-public class RegexParser {
+public final class RegexParser {
 
-  public ParsedObject parse(String string) {
-    return new ParsedObject(Pattern.compile("(" + String.join("|", string.split(" ")) + ")",
+  public static RegexInfo parse(String string) {
+    return new RegexInfo(Pattern.compile("(" + String.join("|", string.split(" ")) + ")",
         Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE), string);
   }
 
-
-  public static class ParsedObject {
+  public static class RegexInfo {
 
     private final Pattern pattern;
     private final String string;
 
-    private ParsedObject(Pattern pattern, String string) {
+    private RegexInfo(Pattern pattern, String string) {
       this.pattern = pattern;
       this.string = string;
     }

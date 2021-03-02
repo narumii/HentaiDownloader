@@ -16,25 +16,23 @@ import org.jsoup.select.Elements;
 import xyz.ethyr.booru.Image;
 import xyz.ethyr.booru.Site;
 import xyz.ethyr.downloader.Downloader;
-import xyz.ethyr.parser.RegexParser;
-import xyz.ethyr.parser.RegexParser.ParsedObject;
+import xyz.ethyr.util.RegexParser;
+import xyz.ethyr.util.RegexParser.RegexInfo;
 import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
 import xyz.ethyr.util.SiteUtil;
 
 public class KonachanDownloader extends Downloader {
 
-  private static final RegexParser REGEX_PARSER = new RegexParser();
   private static final String URL = "https://konachan.com/post.xml?limit=%s&page=%s&tags=%s";
 
   private final List<Site> urls = new ArrayList<>();
   private final int amount;
+  private final RegexInfo ratings;
+  private final RegexInfo blacklistedTags;
+  private final String[] tags;
 
   private Elements gelbooruElement;
-
-  private final ParsedObject ratings;
-  private final ParsedObject blacklistedTags;
-  private final String[] tags;
 
   public KonachanDownloader(File dir, Scanner scanner) {
     super(dir);
@@ -43,10 +41,10 @@ public class KonachanDownloader extends Downloader {
     tags = scanner.nextLine().split(" ");
 
     System.out.print("Blacklisted tags: ");
-    blacklistedTags = REGEX_PARSER.parse(scanner.nextLine());
+    blacklistedTags = RegexParser.parse(scanner.nextLine());
 
     System.out.print("Ratings (eq. s q e): ");
-    ratings = REGEX_PARSER.parse(scanner.nextLine());
+    ratings = RegexParser.parse(scanner.nextLine());
 
     System.out.print("Amount: ");
     amount = scanner.nextInt();
@@ -70,9 +68,9 @@ public class KonachanDownloader extends Downloader {
 
           gelbooruElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
           for (int i = 0; i < site.getAmount(); i++) {
-            System.out.print(String.format("Downloading | Page: %s/%s, Image: %s/%s - (%s%s)\r",
+            System.out.printf("Downloading | Page: %s/%s, Image: %s/%s - (%s%s)\r",
                 j + 1, urls.size(), i + 1, site.getAmount(), ((i + 1) * 100) / site.getAmount(),
-                "%"));
+                "%");
 
             Image image = getImage(i);
             if (image == null) {
@@ -91,9 +89,8 @@ public class KonachanDownloader extends Downloader {
           e.printStackTrace();
         }
       }
-      System.out.print(String
-          .format("Downloaded %s images with %s %s\r", amount, String.join(", ", tags),
-              tags.length > 1 ? "tags" : "tag"));
+      System.out.printf("Downloaded %s images with %s %s\r", amount, String.join(", ", tags),
+          tags.length > 1 ? "tags" : "tag");
       setDownloading(false);
     });
   }

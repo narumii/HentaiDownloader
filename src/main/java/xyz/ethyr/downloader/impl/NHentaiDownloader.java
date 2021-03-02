@@ -45,11 +45,11 @@ public class NHentaiDownloader extends Downloader {
         System.out.println("Doujinshi Name: " + doujinshiName);
         System.out.println("Doujinshi Pages: " + doujinshiPages);
 
-        File file = new File(this.dir, FileUtil.replace(doujinshiName));
+        File file = FileUtil.createFile(dir, doujinshiName);
         FileUtil.deleteAndCreateDirectory(file);
         for (int doujinshiPage = 1; doujinshiPage != doujinshiPages + 1; doujinshiPage++) {
-          System.out.print(String.format("Downloading | Page: %s/%s - (%s%s)\r",
-              doujinshiPage, doujinshiPages, ((doujinshiPage * 100) / doujinshiPages), "%"));
+          System.out.printf("Downloading | Page: %s/%s - (%s%s)\r",
+              doujinshiPage, doujinshiPages, ((doujinshiPage * 100) / doujinshiPages), "%");
 
           String imageUrl = Jsoup
               .connect(String.format(VIEW_URL, this.doujinshiId, doujinshiPage))
@@ -64,7 +64,7 @@ public class NHentaiDownloader extends Downloader {
       } catch (Exception e) {
         e.printStackTrace();
       }
-      System.out.print(String.format("Downloaded %s doujinshi\r", doujinshiName));
+      System.out.printf("Downloaded %s doujinshi\r", doujinshiName);
       setDownloading(false);
     });
   }

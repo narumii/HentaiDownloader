@@ -16,8 +16,8 @@ import org.jsoup.select.Elements;
 import xyz.ethyr.booru.Image;
 import xyz.ethyr.booru.Site;
 import xyz.ethyr.downloader.Downloader;
-import xyz.ethyr.parser.RegexParser;
-import xyz.ethyr.parser.RegexParser.ParsedObject;
+import xyz.ethyr.util.RegexParser;
+import xyz.ethyr.util.RegexParser.RegexInfo;
 import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
 import xyz.ethyr.util.SiteUtil;
@@ -32,7 +32,7 @@ public class SafeBooruDownloader extends Downloader {
 
   private Elements gelbooruElement;
 
-  private final ParsedObject blacklistedTags;
+  private final RegexInfo blacklistedTags;
   private final String[] tags;
 
   public SafeBooruDownloader(File dir, Scanner scanner) {
@@ -42,7 +42,7 @@ public class SafeBooruDownloader extends Downloader {
     tags = scanner.nextLine().split(" ");
 
     System.out.print("Blacklisted tags: ");
-    blacklistedTags = REGEX_PARSER.parse(scanner.nextLine());
+    blacklistedTags = RegexParser.parse(scanner.nextLine());
 
     System.out.print("Amount: ");
     amount = scanner.nextInt();
@@ -58,17 +58,16 @@ public class SafeBooruDownloader extends Downloader {
       for (int j = 0; j < urls.size(); j++) {
         try {
           Site site = urls.get(j);
-          File file = FileUtil
-              .createFile(dir, Arrays.toString(tags) + blacklistedTags.getString(" - "));
+          File file = FileUtil.createFile(dir, Arrays.toString(tags) + blacklistedTags.getString(" - "));
           if (!file.exists()) {
             file.mkdirs();
           }
 
           gelbooruElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
           for (int i = 0; i < site.getAmount(); i++) {
-            System.out.print(String.format("Downloading | Page: %s/%s, Image: %s/%s - (%s%s)\r",
+            System.out.printf("Downloading | Page: %s/%s, Image: %s/%s - (%s%s)\r",
                 j + 1, urls.size(), i + 1, site.getAmount(), ((i + 1) * 100) / site.getAmount(),
-                "%"));
+                "%");
 
             Image image = getImage(i);
             if (image == null) {
@@ -87,9 +86,8 @@ public class SafeBooruDownloader extends Downloader {
           e.printStackTrace();
         }
       }
-      System.out.print(String
-          .format("Downloaded %s images with %s %s\r", amount, String.join(", ", tags),
-              tags.length > 1 ? "tags" : "tag"));
+      System.out.printf("Downloaded %s images with %s %s\r", amount, String.join(", ", tags),
+          tags.length > 1 ? "tags" : "tag");
       setDownloading(false);
     });
   }

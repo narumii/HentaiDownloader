@@ -1,5 +1,7 @@
 package xyz.ethyr.downloader;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Optional;
 import xyz.ethyr.downloader.impl.EHentaiDownloader;
@@ -12,7 +14,7 @@ import xyz.ethyr.downloader.impl.Rule34Downloader;
 import xyz.ethyr.downloader.impl.SafeBooruDownloader;
 import xyz.ethyr.downloader.impl.YandereDownloader;
 
-public enum DownloaderEnum {
+public enum DownloaderType {
 
   EHENTAI("ehentai", EHentaiDownloader.class),
   GELBOORU("gelbooru", GelBooruDownloader.class),
@@ -24,16 +26,19 @@ public enum DownloaderEnum {
   SAFEBOORU("safebooru", SafeBooruDownloader.class),
   YANDERE("yandere", YandereDownloader.class);
 
-
   private final String name;
-  private final Class<?> clazz;
+  private MethodHandle constructor;
 
-  DownloaderEnum(String name, Class<?> clazz) {
+  DownloaderType(String name, Class<?> clazz) {
     this.name = name;
-    this.clazz = clazz;
+    try {
+      this.constructor = MethodHandles.publicLookup().unreflectConstructor(clazz.getDeclaredConstructors()[0]);
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    }
   }
 
-  public static Optional<DownloaderEnum> getByName(String name) {
+  public static Optional<DownloaderType> getByName(String name) {
     return Arrays.stream(values())
         .filter(downloader -> downloader.getName().equalsIgnoreCase(name))
         .findFirst();
@@ -43,7 +48,7 @@ public enum DownloaderEnum {
     return name;
   }
 
-  public Class<?> getClazz() {
-    return clazz;
+  public MethodHandle getConstructor() {
+    return constructor;
   }
 }
