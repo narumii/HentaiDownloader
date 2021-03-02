@@ -37,7 +37,7 @@ public class Bootstrap {
 
       downloaderOptional = DownloaderFactory.create(name, new File(dir), scanner);
       downloaderOptional.ifPresentOrElse(Downloader::downloadImages, () -> {
-        System.out.printf("No downloader by name %s was found.", name);
+        System.out.printf("No downloader by name %s was found", name);
         scanner.reset();
       });
     } while (true);
