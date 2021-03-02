@@ -35,7 +35,7 @@ public class Bootstrap {
       System.out.println();
       scanner.nextLine(); //JAVA IS THE BEST, NO DOUBT
 
-      downloaderOptional = DownloaderFactory.create(name, new File(dir), scanner);
+      downloaderOptional = DownloaderFactory.fetch(name, new File(dir), scanner);
       downloaderOptional.ifPresentOrElse(Downloader::downloadImages, () -> {
         System.out.printf("No downloader by name %s was found", name);
         scanner.reset();
