@@ -2,7 +2,6 @@ package xyz.ethyr.downloader.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,13 +17,11 @@ import xyz.ethyr.util.SiteUtil;
 
 public class EHentaiDownloader extends Downloader {
 
-  private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
-
-  private List<String> viewUrls = new ArrayList<>();
-  private List<String> fileUrls = new ArrayList<>();
-
+  private final List<String> viewUrls = new ArrayList<>();
+  private final List<String> fileUrls = new ArrayList<>();
+  private final boolean all;
   private String link;
-  private boolean all;
+  private String name;
   private int pages;
 
   public EHentaiDownloader(File dir, Scanner scanner) {
@@ -45,12 +42,13 @@ public class EHentaiDownloader extends Downloader {
 
   @Override
   public void downloadImages() {
+    setDownloading(true);
     ExecutorUtil.submit(() -> {
       try {
         Document element = Jsoup.connect(String.format(link, 0))
             .cookie("nw", "1")
             .get();
-        String name = element.getElementById("gn").getElementsByTag("h1").text();
+        name = element.getElementById("gn").getElementsByTag("h1").text();
 
         int images = Integer
             .parseInt(element.body().getElementsContainingOwnText("pages").text().split(" ")[0]);
@@ -67,23 +65,20 @@ public class EHentaiDownloader extends Downloader {
         FileUtil.deleteAndCreateDirectory(file);
 
         for (int i = 0; i < fileUrls.size(); i++) {
-          System.out.print(
-              "Downloading " + (i + 1) + "/" + (all ? images : 1) + " (" + (((i + 1) * 100)
-                  / (all ? images : 1)) + "%)\r");
+          System.out.print(String.format("Downloading | Image: %s/%s - (%s%s)\r",
+              i + 1, all ? images : 1, ((i + 1) * 100) / (all ? images : 1), "%"));
 
-          try {
-            URLConnection connection = new URL(fileUrls.get(i)).openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            Files
-                .copy(connection.getInputStream(),
-                    Paths.get(file.getPath(), i + FileUtil.replace(name) + ".jpg"));
-          } catch (Exception e) {
-            e.printStackTrace();
+          URLConnection connection = SiteUtil.openConnection(fileUrls.get(i));
+          if (connection != null) {
+            Files.copy(connection.getInputStream(),
+                Paths.get(file.getPath(), i + FileUtil.replace(name) + ".jpg"));
           }
         }
       } catch (Exception e) {
         e.printStackTrace();
       }
+      System.out.print(String.format("Downloaded %s\r", name));
+      setDownloading(false);
     });
   }
 

@@ -1,7 +1,6 @@
 package xyz.ethyr.downloader.impl;
 
 import java.io.File;
-import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,14 +10,15 @@ import org.jsoup.nodes.Document;
 import xyz.ethyr.downloader.Downloader;
 import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
+import xyz.ethyr.util.SiteUtil;
 
 public class NHentaiDownloader extends Downloader {
 
   private static final String MAIN_URL = "https://nhentai.to/g/%s";
   private static final String VIEW_URL = "https://nhentai.to/g/%s/%s";
-  private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
 
-  private String doujinshiId;
+  private final String doujinshiId;
+  private String doujinshiName;
 
   public NHentaiDownloader(File dir, Scanner scanner) {
     super(dir);
@@ -33,37 +33,38 @@ public class NHentaiDownloader extends Downloader {
 
   @Override
   public void downloadImages() {
+    setDownloading(true);
     ExecutorUtil.submit(() -> {
       try {
         Document element = Jsoup.connect(String.format(MAIN_URL, this.doujinshiId)).get();
-        String doujinshiName = element.body().getElementById("info").getElementsByTag("h1")
+        doujinshiName = element.body().getElementById("info").getElementsByTag("h1")
             .text();
         int doujinshiPages = Integer
             .parseInt(element.body().getElementsContainingOwnText("pages").text().split(" ")[0]);
+
         System.out.println("Doujinshi Name: " + doujinshiName);
         System.out.println("Doujinshi Pages: " + doujinshiPages);
 
         File file = new File(this.dir, FileUtil.replace(doujinshiName));
         FileUtil.deleteAndCreateDirectory(file);
         for (int doujinshiPage = 1; doujinshiPage != doujinshiPages + 1; doujinshiPage++) {
-          System.out.print(
-              "Downloading " + doujinshiPage + "/" + doujinshiPages + " (" + ((doujinshiPage * 100)
-                  / doujinshiPages) + "%)\r");
+          System.out.print(String.format("Downloading | Page: %s/%s - (%s%s)\r",
+              doujinshiPage, doujinshiPages, ((doujinshiPage * 100) / doujinshiPages), "%"));
 
-          try {
-            String imageUrl = Jsoup
-                .connect(String.format(VIEW_URL, this.doujinshiId, doujinshiPage))
-                .get().body().getElementById("image-container").select("img").attr("src");
-            URLConnection connection = new URL(imageUrl).openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            Files
-                .copy(connection.getInputStream(),
-                    Paths.get(file.getPath(), doujinshiPage + ".jpg"));
-          } catch (Exception e) {
+          String imageUrl = Jsoup
+              .connect(String.format(VIEW_URL, this.doujinshiId, doujinshiPage))
+              .get().body().getElementById("image-container").select("img").attr("src");
+
+          URLConnection connection = SiteUtil.openConnection(imageUrl);
+          if (connection != null) {
+            Files.copy(connection.getInputStream(),
+                Paths.get(file.getPath(), doujinshiPage + ".jpg"));
           }
         }
       } catch (Exception e) {
       }
+      System.out.print(String.format("Downloaded %s doujinshi\r", doujinshiName));
+      setDownloading(false);
     });
   }
 }

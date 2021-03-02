@@ -4,6 +4,10 @@ import java.io.File;
 
 public final class FileUtil {
 
+  public static File createFile(File dir, String name) {
+    return new File(dir, replace(name));
+  }
+
   //XD
   public static String replace(String string) {
     return string

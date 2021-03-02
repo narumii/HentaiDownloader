@@ -1,7 +1,6 @@
 package xyz.ethyr.downloader.impl;
 
 import java.io.File;
-import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,7 +17,7 @@ import xyz.ethyr.booru.Image;
 import xyz.ethyr.booru.Site;
 import xyz.ethyr.downloader.Downloader;
 import xyz.ethyr.parser.RegexParser;
-import xyz.ethyr.parser.RegexParser.ParserObject;
+import xyz.ethyr.parser.RegexParser.ParsedObject;
 import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
 import xyz.ethyr.util.SiteUtil;
@@ -26,17 +25,16 @@ import xyz.ethyr.util.SiteUtil;
 public class YandereDownloader extends Downloader {
 
   private static final RegexParser REGEX_PARSER = new RegexParser();
-  private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
   private static final String URL = "https://yande.re/post.xml?limit=%s&page=%s&tags=%s";
 
-  private List<Site> urls = new ArrayList<>();
-  private int amount;
+  private final List<Site> urls = new ArrayList<>();
+  private final int amount;
 
   private Elements gelbooruElement;
 
-  private ParserObject ratings;
-  private ParserObject blacklistedTags;
-  private String[] tags;
+  private final ParsedObject ratings;
+  private final ParsedObject blacklistedTags;
+  private final String[] tags;
 
   public YandereDownloader(File dir, Scanner scanner) {
     super(dir);
@@ -59,36 +57,45 @@ public class YandereDownloader extends Downloader {
 
   @Override
   public void downloadImages() {
-    ExecutorUtil.submit(() -> urls.forEach(site -> {
-      try {
-        File file = new File(this.dir,
-            FileUtil.replace(Arrays.toString(tags) + " -" + blacklistedTags.getString()));
-        if (!file.exists()) {
-          file.mkdirs();
-        }
-
-        gelbooruElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
-        for (int i = 0; i < site.getAmount(); i++) {
-          System.out.print(
-              "Downloading " + (i + 1) + "/" + site.getAmount() + " (" + (((i + 1) * 100)
-                  / site.getAmount()) + "%)\r");
-
-          Image image = getImage(i);
-          if (image == null) {
-            continue;
+    setDownloading(true);
+    ExecutorUtil.submit(() -> {
+      for (int j = 0; j < urls.size(); j++) {
+        try {
+          Site site = urls.get(j);
+          File file = FileUtil
+              .createFile(dir, Arrays.toString(tags) + blacklistedTags.getString(" - "));
+          if (!file.exists()) {
+            file.mkdirs();
           }
 
-          URLConnection connection = new URL(image.getDownloadURL()).openConnection();
-          connection.setRequestProperty("User-Agent", USER_AGENT);
-          String extension = image.getDownloadURL().split("\\.")[3];
-          Files
-              .copy(connection.getInputStream(),
+          gelbooruElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
+          for (int i = 0; i < site.getAmount(); i++) {
+            System.out.print(String.format("Downloading | Page: %s/%s, Image: %s/%s - (%s%s)\r",
+                j + 1, urls.size(), i + 1, site.getAmount(), ((i + 1) * 100) / site.getAmount(),
+                "%"));
+
+            Image image = getImage(i);
+            if (image == null) {
+              continue;
+            }
+
+            URLConnection connection = SiteUtil.openConnection(image.getDownloadURL());
+            if (connection != null) {
+              String extension = image.getDownloadURL().split("\\.")[3];
+              Files.copy(connection.getInputStream(),
                   Paths.get(file.getPath(), "yr_" + image.getName() + "." + extension));
+            }
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-      } catch (Exception e) {
-        e.printStackTrace();
       }
-    }));
+
+      System.out.print(String
+          .format("Downloaded %s images with %s %s\r", amount, String.join(", ", tags),
+              tags.length > 1 ? "tags" : "tag"));
+      setDownloading(false);
+    });
   }
 
   private Image getImage(int image) {

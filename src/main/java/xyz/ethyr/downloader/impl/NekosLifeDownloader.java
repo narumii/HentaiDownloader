@@ -1,7 +1,6 @@
 package xyz.ethyr.downloader.impl;
 
 import java.io.File;
-import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,7 +12,6 @@ import xyz.ethyr.util.SiteUtil;
 
 public class NekosLifeDownloader extends Downloader {
 
-  private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
   private static final String URL = "https://nekos.life/api/v2/img/%s";
   private static final String[] ENDPOINTS = new String[]{"femdom", "tickle", "classic", "ngif",
       "erofeet", "meow", "erok", "poke", "les", "v3", "hololewd", "nekoapi_v3.1", "lewdk", "keta",
@@ -24,8 +22,8 @@ public class NekosLifeDownloader extends Downloader {
       "trap", "anal", "baka", "blowjob", "holoero", "feed", "neko", "gasm", "hentai", "futanari",
       "ero", "solo", "waifu", "pwankg", "eron", "erokemo"};
 
-  private String tag;
-  private int amount;
+  private final String tag;
+  private final int amount;
 
   public NekosLifeDownloader(File dir, Scanner scanner) {
     super(dir);
@@ -43,6 +41,7 @@ public class NekosLifeDownloader extends Downloader {
 
   @Override
   public void downloadImages() {
+    setDownloading(true);
     ExecutorUtil.submit(() -> {
       try {
         File file = new File(this.dir, tag);
@@ -51,21 +50,22 @@ public class NekosLifeDownloader extends Downloader {
         }
 
         for (int i = 0; i < amount; i++) {
-          System.out.print(
-              "Downloading " + (i + 1) + "/" + amount + " (" + (((i + 1) * 100)
-                  / amount) + "%)\r");
+          System.out.print(String.format("Downloading | Image: %s/%s - (%s%s)\r",
+              i + 1, amount, (((i + 1) * 100) / amount), "%"));
 
           String fileUrl = SiteUtil.toJson(String.format(URL, tag)).getString("url");
-          URLConnection connection = new URL(fileUrl).openConnection();
-          connection.setRequestProperty("User-Agent", USER_AGENT);
-          Files
-              .copy(connection.getInputStream(),
-                  Paths.get(file.getPath(),
-                      "nl_" + RandomStringUtils.randomAlphabetic(15) + "." + fileUrl
-                          .split("\\.")[3]));
+          String extension = fileUrl.split("\\.")[3];
+          URLConnection connection = SiteUtil.openConnection(fileUrl);
+          if (connection != null) {
+            Files.copy(connection.getInputStream(), Paths.get(file.getPath(),
+                "nl_" + RandomStringUtils.randomAlphabetic(15) + "." + extension));
+          }
         }
       } catch (Exception e) {
+        e.printStackTrace();
       }
+      System.out.print(String.format("Downloaded %s images with %s tag\r", amount, tag));
+      setDownloading(false);
     });
   }
 

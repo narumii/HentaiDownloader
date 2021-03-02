@@ -1,6 +1,9 @@
 package xyz.ethyr.util;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,5 +46,21 @@ public final class SiteUtil {
   public static JSONObject toJson(String url) throws IOException {
     return new JSONObject(
         Jsoup.connect(url).userAgent(USER_AGENT).ignoreContentType(true).execute().body());
+  }
+
+  public static URLConnection openConnection(String url) {
+    HttpURLConnection connection = null;
+    try {
+      connection = (HttpURLConnection) new URL(url).openConnection();
+      connection.setRequestProperty("User-Agent", USER_AGENT);
+      return connection;
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+    return null;
   }
 }
