@@ -11,7 +11,7 @@ import xyz.ethyr.downloader.DownloaderType;
 
 public class Bootstrap {
 
-  public static void main(String... args) throws IOException {
+  public static void main(String... args) {
     Optional<Downloader> downloaderOptional = Optional.empty();
     Scanner scanner = new Scanner(System.in);
     System.out.println("HentaiDownloader created by narumi ( https://github.com/narumii )");
