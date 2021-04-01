@@ -1,9 +1,6 @@
 package xyz.ethyr.downloader.impl;
 
 import java.io.File;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Scanner;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -37,8 +34,7 @@ public class NHentaiDownloader extends Downloader {
     ExecutorUtil.submit(() -> {
       try {
         Document element = Jsoup.connect(String.format(MAIN_URL, this.doujinshiId)).get();
-        doujinshiName = element.body().getElementById("info").getElementsByTag("h1")
-            .text();
+        doujinshiName = element.body().getElementById("info").getElementsByTag("h1").text();
         int doujinshiPages = Integer
             .parseInt(element.body().getElementsByClass("name").last().ownText());
 
@@ -55,11 +51,8 @@ public class NHentaiDownloader extends Downloader {
               .connect(String.format(VIEW_URL, this.doujinshiId, doujinshiPage))
               .get().body().getElementById("image-container").select("img").attr("src");
 
-          URLConnection connection = SiteUtil.openConnection(imageUrl);
-          if (connection != null) {
-            Files.copy(connection.getInputStream(),
-                Paths.get(file.getPath(), doujinshiPage + ".jpg"));
-          }
+          FileUtil.saveImage(FileUtil.computePath(file, String.valueOf(doujinshiPage), "jpg"),
+              SiteUtil.openConnection(imageUrl));
         }
       } catch (Exception e) {
         e.printStackTrace();

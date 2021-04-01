@@ -4,6 +4,7 @@ Especially for Vexio and Out
 ---
 
 ### Supported sites
+- Danbooru: https://danbooru.donmai.us/
 - Rule34: https://rule34.xxx/
 - Gelbooru: https://gelbooru.com/
 - Safebooru: https://safebooru.donmai.us/
@@ -15,5 +16,4 @@ Especially for Vexio and Out
 - EHnetai: https://e-hentai.org/
 
 ### TODO
-- Danbooru
 - Multi-threading for downloading

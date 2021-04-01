@@ -14,7 +14,6 @@ public final class DownloaderFactory {
     try {
       return (Downloader) type.getConstructor().invoke(dir, scanner);
     } catch (Throwable throwable) {
-      throwable.printStackTrace();
       return null;
     }
   }

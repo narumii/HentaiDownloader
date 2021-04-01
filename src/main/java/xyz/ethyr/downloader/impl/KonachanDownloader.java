@@ -1,25 +1,19 @@
 package xyz.ethyr.downloader.impl;
 
 import java.io.File;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import xyz.ethyr.booru.Image;
 import xyz.ethyr.booru.Site;
 import xyz.ethyr.downloader.Downloader;
-import xyz.ethyr.util.RegexParser;
-import xyz.ethyr.util.RegexParser.RegexInfo;
 import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
+import xyz.ethyr.util.RegexParser;
+import xyz.ethyr.util.RegexParser.RegexInfo;
 import xyz.ethyr.util.SiteUtil;
 
 public class KonachanDownloader extends Downloader {
@@ -31,8 +25,6 @@ public class KonachanDownloader extends Downloader {
   private final RegexInfo ratings;
   private final RegexInfo blacklistedTags;
   private final String[] tags;
-
-  private Elements gelbooruElement;
 
   public KonachanDownloader(File dir, Scanner scanner) {
     super(dir);
@@ -66,24 +58,17 @@ public class KonachanDownloader extends Downloader {
             file.mkdirs();
           }
 
-          gelbooruElement = Jsoup.connect(site.getUrl()).get().getElementsByTag("post").clone();
+          Elements elements = Jsoup.connect(site.getUrl()).get().getElementsByTag("post");
           for (int i = 0; i < site.getAmount(); i++) {
             System.out.printf("Downloading | Page: %s/%s, Image: %s/%s - (%s%s)\r",
                 j + 1, urls.size(), i + 1, site.getAmount(), ((i + 1) * 100) / site.getAmount(),
                 "%");
 
-            Image image = getImage(i);
-            if (image == null) {
-              continue;
-            }
-
-            URLConnection connection = SiteUtil.openConnection(image.getDownloadURL());
-            if (connection != null) {
-              String[] extension = image.getDownloadURL().split("\\.");
-              Files.copy(connection.getInputStream(),
-                  Paths.get(file.getPath(),
-                      "kc_" + image.getName() + "." + extension[extension.length - 1]));
-            }
+            SiteUtil.getImage("kc_" + i, i, elements, ratings, blacklistedTags)
+                .ifPresent(image -> FileUtil.saveImage(
+                    FileUtil.computePath(file, image.getName(),
+                        SiteUtil.getExtension(image.getDownloadURL())),
+                    SiteUtil.openConnection(image.getDownloadURL())));
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -93,21 +78,5 @@ public class KonachanDownloader extends Downloader {
           tags.length > 1 ? "tags" : "tag");
       setDownloading(false);
     });
-  }
-
-  private Image getImage(int image) {
-    try {
-      Element post = gelbooruElement.get(image);
-      String tags = post.attr("tags");
-      String rating = post.attr("rating");
-      if (ratings.getPattern().matcher(rating).matches() && !(!blacklistedTags.getString().isEmpty()
-          && blacklistedTags.getPattern().matcher(tags).find())) {
-        return new Image(post.attr("file_url"),
-            image + "_" + RandomStringUtils.randomAlphabetic(10));
-      }
-      return null;
-    } catch (Exception e) {
-      return null;
-    }
   }
 }

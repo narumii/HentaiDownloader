@@ -2,9 +2,6 @@ package xyz.ethyr.downloader.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -66,14 +63,13 @@ public class EHentaiDownloader extends Downloader {
         FileUtil.deleteAndCreateDirectory(file);
 
         for (int i = 0; i < fileUrls.size(); i++) {
-          System.out.printf("Downloading | Image: %s/%s - (%s%s)\r",
-              i + 1, all ? images : 1, ((i + 1) * 100) / (all ? images : 1), "%");
+          System.out.printf("Downloading | Image: %s/%s - (%s%s)\r", i + 1, all ? images : 1,
+              ((i + 1) * 100) / (all ? images : 1), "%");
 
-          URLConnection connection = SiteUtil.openConnection(fileUrls.get(i));
-          if (connection != null) {
-            Files.copy(connection.getInputStream(),
-                Paths.get(file.getPath(), i + ".jpg"));
-          }
+          FileUtil.saveImage(
+              FileUtil.computePath(file, String.valueOf(i), ".jpg"),
+              SiteUtil.openConnection(fileUrls.get(i))
+          );
         }
       } catch (Exception e) {
         e.printStackTrace();

@@ -1,11 +1,7 @@
 package xyz.ethyr.downloader.impl;
 
 import java.io.File;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Scanner;
-import org.apache.commons.lang3.RandomStringUtils;
 import xyz.ethyr.downloader.Downloader;
 import xyz.ethyr.util.ExecutorUtil;
 import xyz.ethyr.util.FileUtil;
@@ -55,13 +51,8 @@ public class NekosLifeDownloader extends Downloader {
               i + 1, amount, (((i + 1) * 100) / amount), "%");
 
           String fileUrl = SiteUtil.toJson(String.format(URL, tag)).getString("url");
-          String[] extension = fileUrl.split("\\.");
-          URLConnection connection = SiteUtil.openConnection(fileUrl);
-          if (connection != null) {
-            Files.copy(connection.getInputStream(), Paths.get(file.getPath(),
-                "nl_" + RandomStringUtils.randomAlphabetic(15) + "." + extension[extension.length
-                    - 1]));
-          }
+          FileUtil.saveImage(FileUtil.computePath(file, "nl_" + FileUtil.generateRandomString(15),
+              SiteUtil.getExtension(fileUrl)), SiteUtil.openConnection(fileUrl));
         }
       } catch (Exception e) {
         e.printStackTrace();

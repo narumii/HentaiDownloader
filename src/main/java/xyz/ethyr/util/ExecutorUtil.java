@@ -5,15 +5,9 @@ import java.util.concurrent.Executors;
 
 public final class ExecutorUtil {
 
+  private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+
   public static void submit(Runnable runnable) {
-    ExecutorService executor = null;
-    try {
-      executor = Executors.newSingleThreadExecutor();
-      executor.submit(runnable);
-    } finally {
-      if (executor != null) {
-        executor.shutdown();
-      }
-    }
+    EXECUTOR_SERVICE.submit(runnable);
   }
 }

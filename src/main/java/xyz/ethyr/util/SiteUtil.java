@@ -5,15 +5,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.internal.StringUtil;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import xyz.ethyr.booru.Image;
 import xyz.ethyr.booru.Site;
+import xyz.ethyr.util.RegexParser.RegexInfo;
 
 public final class SiteUtil {
 
@@ -36,8 +40,8 @@ public final class SiteUtil {
     List<Site> urls = new ArrayList<>();
     pages.forEach((page, images) -> {
       if (images > 0) {
-        urls.add(new Site(String.format(url, images, page, StringUtil.join(
-            Arrays.asList(tags), "+")), page, images));
+        urls.add(
+            new Site(String.format(url, images, page, StringUtil.join(tags, "+")), page, images));
       }
     });
     return urls;
@@ -62,5 +66,26 @@ public final class SiteUtil {
       }
     }
     return null;
+  }
+
+  public static String getExtension(String url) {
+    return url.split("\\.")[url.split("\\.").length - 1];
+  }
+
+  public static Optional<Image> getImage(String fileName, int position, Elements elements,
+      RegexInfo ratings, RegexInfo blacklistedTags) {
+    try {
+      Element post = elements.get(position);
+      String tags = post.attr("tags");
+      String rating = post.attr("rating");
+      if ((ratings == null || ratings.getPattern().matcher(rating).matches()) && !(
+          !blacklistedTags.getString().isEmpty() && blacklistedTags.getPattern().matcher(tags)
+              .find())) {
+        return Optional.of(new Image(post.attr("file_url"),
+            fileName + "_" + FileUtil.generateRandomString(10)));
+      }
+    } catch (Exception e) {
+    }
+    return Optional.empty();
   }
 }

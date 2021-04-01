@@ -1,9 +1,6 @@
 package xyz.ethyr.downloader.impl;
 
 import java.io.File;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Scanner;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -51,12 +48,9 @@ public class NineHentaiDownloader extends Downloader {
           System.out.printf("Downloading | Page: %s/%s - (%s%s)\r",
               doujinshiPage, doujinshiPages, ((doujinshiPage * 100) / doujinshiPages), "%");
 
-          URLConnection connection = SiteUtil
-              .openConnection(String.format(DOWNLOAD_URL, this.doujinshiId, doujinshiPage));
-          if (connection != null) {
-            Files.copy(connection.getInputStream(),
-                Paths.get(file.getPath(), doujinshiPage + ".jpg"));
-          }
+          FileUtil.saveImage(FileUtil.computePath(file, String.valueOf(doujinshiPage), "jpg"),
+              SiteUtil
+                  .openConnection(String.format(DOWNLOAD_URL, this.doujinshiId, doujinshiPage)));
         }
       } catch (Exception e) {
         e.printStackTrace();
