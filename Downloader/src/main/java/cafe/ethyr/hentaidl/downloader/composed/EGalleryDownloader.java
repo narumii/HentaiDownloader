@@ -57,23 +57,22 @@ public abstract class EGalleryDownloader extends GalleryDownloader {
                         ExecutorHelper.submit(() -> {
                             int entry = image.getAndIncrement();
                             int fileIndex = fileNameIndex.getAndIncrement();
+                            String url = gatherImageUrl(createJsoup(viewUrls.get(entry)));
 
                             System.out.printf("Downloading (%s) | Page: %s/%s, Image: %s/%s (%s)\r",
                                     name, sitePage + 1, pages, fileIndex + 1, images, calculatePercent(fileIndex + 1, images));
 
                             FileHelper.saveImage(
-                                    FileHelper.computePath(path.toFile(), String.valueOf(fileIndex), "jpg"),
-                                    SiteHelper.openConnection(gatherImageUrl(createJsoup(viewUrls.get(entry)).body()))
+                                    FileHelper.computePath(path.toFile(), String.valueOf(fileIndex), SiteHelper.getExtension(url)),
+                                    SiteHelper.openConnection(url)
                             );
                         });
                     }
-
-                    completeJob(image, viewUrls.size());
                 });
             }
 
-            completeJob(index, pages);
-            complete(String.format("Downloaded %s\r", this.<String>getArgument("url")), pages + 1);
+            completeJob(fileNameIndex, images);
+            complete(String.format("Downloaded %s\r", this.<String>getArgument("url")), 1);
         } catch (Exception e) {
             handleException(e);
         }

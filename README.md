@@ -17,7 +17,7 @@ Simple solution that allows you to download your favourite images from various s
 
 - [EHentai](https://e-hentai.org/)
 - [ExHentai](https://exhentai.org/) [`How to access`](https://f95zone.to/threads/how-to-access-exhentai-2021.76821/)
-- [Hitomi](https://hitomi.la/index-english.html) [`Read me`](https://github.com/narumii/HentaiDownloader)
+- [Hitomi](https://hitomi.la/index-english.html) [`Read me`](https://github.com/narumii/HentaiDownloader/wiki/Hitomi.la)
 
 ---
 

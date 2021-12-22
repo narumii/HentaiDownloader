@@ -8,7 +8,6 @@ import cafe.ethyr.hentaidl.helper.SiteHelper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -53,16 +52,9 @@ public abstract class GalleryDownloader extends Downloader {
                             name, page, pages, calculatePercent(page, pages));
 
                     int fileName = fileNameIndex.getAndIncrement();
-                    try { //hardcoded as fuck
-                        FileHelper.saveImage(FileHelper.computePath(path.toFile(), String.valueOf(fileName), "jpg"),
-                                SiteHelper.openConnection(String.format(downloadUrl, page)));
-                    } catch (Exception e) {
-                        if (e.getCause() instanceof FileNotFoundException)
-                            FileHelper.saveImage(FileHelper.computePath(path.toFile(), String.valueOf(fileName), "png"),
-                                    SiteHelper.openConnection(String.format(downloadUrl.replace(".jpg", ".png"), page)));
-                        else
-                            handleException(e);
-                    }
+                    String url = String.format(downloadUrl, page);
+                    FileHelper.saveImage(FileHelper.computePath(path.toFile(), String.valueOf(fileName), SiteHelper.getExtension(url)),
+                            SiteHelper.openConnection(url));
                     throw new ThreadDeath();
                 });
             }
