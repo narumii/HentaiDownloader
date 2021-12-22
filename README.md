@@ -3,6 +3,8 @@
 Simple solution that allows you to download your favourite images from various sites.
 
 ---
+### [How to use](https://github.com/narumii/HentaiDownloader/wiki/Setting-up)
+---
 
 ### Supported sites
 
