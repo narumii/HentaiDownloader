@@ -1,7 +1,7 @@
 # HentaiDownloader
 
 Simple solution that allows you to download your favourite images from various sites.
-
+I umili czas na szkoleniu azure xd
 ---
 ### [How to use](https://github.com/narumii/HentaiDownloader/wiki/Setting-up)
 ---
