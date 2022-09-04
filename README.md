@@ -56,10 +56,10 @@ If you want to know more check those link may help you\
 - [NHentai](https://nhentai.net/)
 - [9Hentai](https://9hentai.to/)
 - [IMHentai](https://imhentai.xxx/)
-- [ASMHnetai](https://asmhentai.com/)
+- [ASMHentai](https://asmhentai.com/)
 - [HentaiFox](https://hentaifox.com/)
 - [Pururin](https://pururin.to/)
-- [nHnetai.com](https://nhentai.com/)
+- [nHentai.com](https://nhentai.com/)
 
 ---
 

@@ -97,7 +97,7 @@ public enum DownloaderType {
     NEKOSLIFE("nekoslife", NekosLifeDownloader.class, "https://nekos.life/api/v2/img/%s"),
     NHENTAI("nhentai", NHentaiDownloader.class, "https://i.nhentai.net/galleries/%s/%s.%s"),
     OLD_NHENTAI("oldnhentai", OldNHentaiDownloader.class, null),
-    NINEHENTAI("ninehentai", NineHentaiDownloader.class, "https://cdn.9hentai.ru/images/%s/%s.jpg"),
+    NINEHENTAI("9hentai", NineHentaiDownloader.class, "https://cdn.9hentai.ru/images/%s/%s.jpg"),
     NHENTAICOM("nhentai.com", UnoriginalNHentaiDownloader.class, "https://nhentai.com/api/comics/%s/images?lang=%s&nsfw=true"),
     PURURIN("pururin", PururinDownloader.class, "https://cdn.pururin.to/assets/images/data/%s/%s.jpg"),
     EXHENTAI("exhentai", ExHentaiDownloader.class, null),
