@@ -2,6 +2,7 @@ package cafe.ethyr.hentaidl.downloader;
 
 import cafe.ethyr.hentaidl.downloader.factory.DownloaderType;
 import cafe.ethyr.hentaidl.helper.PropertiesHelper;
+import okhttp3.OkHttpClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Downloader {
 
+    protected static final OkHttpClient CLIENT = new OkHttpClient();
     private static final boolean debug = Boolean.parseBoolean(PropertiesHelper.getProperty("debug"));
-
     protected final DownloaderType downloaderType;
     private final Map<String, Object> arguments = new HashMap<>();
 
@@ -76,5 +77,9 @@ public abstract class Downloader {
         if (expectedJobs == completedJobs.incrementAndGet()) {
             done();
         }
+    }
+
+    public DownloaderType type() {
+        return downloaderType;
     }
 }

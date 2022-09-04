@@ -3,6 +3,7 @@
 Simple solution that allows you to download your favourite images from various sites.
 
 ---
+
 ## How to
 
 - Download [Java](https://adoptium.net/temurin/releases/?version=11)
@@ -11,8 +12,11 @@ Simple solution that allows you to download your favourite images from various s
 - Input the required arguments into the application
 
 ---
+
 ## Booru search function
-Sites based on booru have search functions, from now HentaiDownloader will be using that instead of rating and tags inputs.\
+
+Sites based on booru have search functions, from now HentaiDownloader will be using that instead of rating and tags
+inputs.\
 **Some sites may have different search functions, this is only simplified version of it**
 
 - Tags: `loli pink_hair happy_sugar_life rape`
@@ -41,16 +45,21 @@ If you want to know more check those link may help you\
 - [LoliBooru](https://lolibooru.moe/)
 - [Tbib](https://tbib.org/)
 - [HypnoHub](https://hypnohub.net/)
+
 ---
 
 - [EHentai](https://e-hentai.org/)
-- [ExHentai](https://exhentai.org/) [`How to access`](https://f95zone.to/threads/how-to-access-exhentai-2021.76821/)
+- [ExHentai](https://exhentai.org/) [`How to access`](https://f95zone.to/threads/how-to-access-exhentai-2021.76821/) [`How to access 2`](https://howtoaccessexhentai.wordpress.com/)
 
 ---
 
 - [NHentai](https://nhentai.net/)
 - [9Hentai](https://9hentai.to/)
 - [IMHentai](https://imhentai.xxx/)
+- [ASMHnetai](https://asmhentai.com/)
+- [HentaiFox](https://hentaifox.com/)
+- [Pururin](https://pururin.to/)
+- [nHnetai.com](https://nhentai.com/)
 
 ---
 
@@ -67,7 +76,7 @@ If you want to know more check those link may help you\
 - DanBooru: `You need to specify user api_key and user_id in order to allow HentaiDownloader work better` [User Options](https://gelbooru.com/index.php?page=account&s=options)
 - GelBooru: `You need to specify user api_key and login in order to allow HentaiDownloader work better` [User Api Keys](https://danbooru.donmai.us/users/923254/api_keys)
 - EXHentai `Since this site is blocked for some users you need to specify "ipb_member_id", "ipb_pass_hash", "igneous" cokkies` [Guide](https://f95zone.to/threads/how-to-access-exhentai-2021.76821/) [Guide 2](https://howtoaccessexhentai.wordpress.com/)
-- NHentai: `They added some fucking shit so you need to specify: your user agent and "cf_chl_2", "cf_chl_prog", "cf_clearance", "csrftoken" cookies`
+- NHentai: `They added some fucking shit so you need to specify: your user agent and "cf_clearance" cookie | or use direct until they fix it ` [1](https://github.com/Zekfad/nhentai-api/issues/25) [2](https://github.com/Zekfad/nhentai-api/issues/25#issuecomment-1147142230) 
 
 ---
 

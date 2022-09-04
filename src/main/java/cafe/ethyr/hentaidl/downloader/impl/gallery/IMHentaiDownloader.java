@@ -17,7 +17,7 @@ public class IMHentaiDownloader extends GalleryDownloader {
 
     @Override
     protected String fixUrl(String url) {
-        if (url.startsWith("https://imhentai.xxx") || url.startsWith("imhentai.xxx"))
+        if (url.contains("imhentai.xxx"))
             url = url.split("/gallery/")[1].replace("/", "");
 
         putArgument("id", url);

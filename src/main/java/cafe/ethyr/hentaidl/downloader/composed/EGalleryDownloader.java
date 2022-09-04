@@ -23,7 +23,6 @@ public abstract class EGalleryDownloader extends GalleryDownloader {
         System.out.println("Link: ");
         putArgument("url", fixUrl(scanner.nextLine()));
 
-        completionMessage(String.format("Downloaded %s\r", this.<String>getArgument("url")));
         System.err.println("Image resolution for now can't be higher than HD");
         System.out.println();
     }
@@ -39,6 +38,7 @@ public abstract class EGalleryDownloader extends GalleryDownloader {
 
             Path path = Path.of(getArgument("path"), FileHelper.fixPath(name));
             FileHelper.deleteAndCreateDirectory(path.toFile());
+            completionMessage(String.format("Downloaded %s\r", name));
 
             System.out.println("Name: " + name);
             System.out.println("Images: " + images);

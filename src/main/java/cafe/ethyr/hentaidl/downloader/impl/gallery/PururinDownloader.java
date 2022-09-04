@@ -1,6 +1,7 @@
-package cafe.ethyr.hentaidl.downloader.composed;
+package cafe.ethyr.hentaidl.downloader.impl.gallery;
 
-import cafe.ethyr.hentaidl.downloader.Downloader;
+import cafe.ethyr.hentaidl.downloader.DownloadException;
+import cafe.ethyr.hentaidl.downloader.composed.GalleryDownloader;
 import cafe.ethyr.hentaidl.downloader.factory.DownloaderType;
 import cafe.ethyr.hentaidl.helper.ExecutorHelper;
 import cafe.ethyr.hentaidl.helper.FileHelper;
@@ -9,30 +10,24 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 import java.nio.file.Path;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class GalleryDownloader extends Downloader {
+public class PururinDownloader extends GalleryDownloader {
 
-    public GalleryDownloader(String path, DownloaderType downloaderType) {
-        super(path, downloaderType);
-    }
+    private static final String GALLERY_URL = "https://pururin.to/gallery/%s";
 
-    @Override
-    public void readInput(Scanner scanner) {
-        System.out.println("Link/Id: ");
-        putArgument("url", fixUrl(scanner.nextLine()));
-        System.out.println();
+    public PururinDownloader(String path) {
+        super(path, DownloaderType.PURURIN);
     }
 
     @Override
     public void downloadImages() {
         try {
             Element body = Jsoup.connect(getArgument("url")).userAgent(SiteHelper.getUserAgent()).get();
+            String id = getArgument("id");
 
             String name = parseName(body);
             int pages = parsePages(body);
-            String downloadUrl = composeDownloadUrl(gatherImageSource(body));
 
             Path path = Path.of(getArgument("path"), FileHelper.fixPath(name));
             FileHelper.deleteAndCreateDirectory(path.toFile());
@@ -51,7 +46,7 @@ public abstract class GalleryDownloader extends Downloader {
                         System.out.printf("Downloading (%s) | Page: %s/%s (%s)\r",
                                 name, page, pages, calculatePercent(page, pages));
 
-                        String url = String.format(downloadUrl, page);
+                        String url = String.format(downloaderType.getApi(), id, page);
                         FileHelper.saveImage(FileHelper.computePath(path.toFile(), String.valueOf(page), SiteHelper.getExtension(url)),
                                 SiteHelper.openConnection(url));
 
@@ -68,27 +63,36 @@ public abstract class GalleryDownloader extends Downloader {
         }
     }
 
-    //==============================================
+    @Override
+    protected String fixUrl(String url) {
+        if (url.contains("pururin.to/gallery"))
+            url = url.split("/gallery/")[1];
 
-    protected abstract String fixUrl(String url);
-
-    protected abstract String parseName(Element body);
-
-    protected abstract int parsePages(Element body);
-
-    protected String gatherImageSource(Element body) {
-        return body.getElementsByTag("head").first().getElementsByAttributeValue("property", "og:image").last().attr("content");
+        putArgument("id", url.split("/")[0]);
+        return String.format(GALLERY_URL, url);
     }
 
-    protected String composeDownloadUrl(String url) {
-        return url.replace("/cover", "/%s");
+    @Override
+    protected String parseName(Element body) {
+        String name = body.getElementsByClass("title").select("h1").text();
+        name = name.contains("/") ? name.substring(0, name.indexOf("/")) : name;
+        if (name.endsWith(" "))
+            name = name.substring(0, name.length() - 1);
+
+        return name;
     }
 
+    @Override
+    protected int parsePages(Element body) {
+        return Integer.parseInt(body.getElementsByClass("table table-gallery-info").first().select("tr").last().parent().getElementsContainingOwnText("(").text().split(" ")[0]);
+    }
+
+    @Override
     protected String gatherImageUrl(int page) {
-        throw new UnsupportedOperationException();
-    }
-
-    protected String gatherImageUrl(Element body) {
-        throw new UnsupportedOperationException();
+        try {
+            return String.format(downloaderType.getApi(), getArgument("id"), page);
+        } catch (Exception e) {
+            throw new DownloadException(e);
+        }
     }
 }

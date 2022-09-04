@@ -8,7 +8,6 @@ import org.jsoup.nodes.Element;
 public class NineHentaiDownloader extends GalleryDownloader {
 
     private static final String MAIN_URL = "https://9hentai.com/g/%s/";
-    private static final String DOWNLOAD_URL = "https://cdn.9hentai.com/images/%s/%s.jpg";
 
     public NineHentaiDownloader(String path) {
         super(path, DownloaderType.NINEHENTAI);
@@ -16,7 +15,7 @@ public class NineHentaiDownloader extends GalleryDownloader {
 
     @Override
     protected String fixUrl(String url) {
-        if (url.startsWith("https://9hentai") || url.startsWith("9hentai"))
+        if (url.contains("9hentai"))
             url = url.split("/g/")[1].replace("/", "");
 
         putArgument("id", url);
@@ -36,7 +35,7 @@ public class NineHentaiDownloader extends GalleryDownloader {
     @Override
     protected String gatherImageUrl(int page) {
         try {
-            return String.format(DOWNLOAD_URL, getArgument("id"), page);
+            return String.format(downloaderType.getApi(), getArgument("id"), page);
         } catch (Exception e) {
             throw new DownloadException(e);
         }

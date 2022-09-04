@@ -38,6 +38,8 @@ public class Bootstrap {
 
                 downloaderOptional = DownloaderFactory.fetch(name, dir);
                 downloaderOptional.ifPresentOrElse(downloader -> {
+                    System.out.println("Using: " + downloader.type().getName());
+                    System.out.println();
                     downloader.readInput(scanner);
                     downloader.downloadImages();
                 }, () -> {

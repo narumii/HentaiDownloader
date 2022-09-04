@@ -3,9 +3,7 @@ package cafe.ethyr.hentaidl.downloader.factory;
 import cafe.ethyr.hentaidl.downloader.impl.booru.*;
 import cafe.ethyr.hentaidl.downloader.impl.ehentai.EHentaiDownloader;
 import cafe.ethyr.hentaidl.downloader.impl.ehentai.ExHentaiDownloader;
-import cafe.ethyr.hentaidl.downloader.impl.gallery.IMHentaiDownloader;
-import cafe.ethyr.hentaidl.downloader.impl.gallery.NHentaiDownloader;
-import cafe.ethyr.hentaidl.downloader.impl.gallery.NineHentaiDownloader;
+import cafe.ethyr.hentaidl.downloader.impl.gallery.*;
 import cafe.ethyr.hentaidl.downloader.impl.other.NekosLifeDownloader;
 
 import java.lang.invoke.MethodHandle;
@@ -97,10 +95,15 @@ public enum DownloaderType {
 
     EHENTAI("ehentai", EHentaiDownloader.class, null),
     NEKOSLIFE("nekoslife", NekosLifeDownloader.class, "https://nekos.life/api/v2/img/%s"),
-    NHENTAI("nhentai", NHentaiDownloader.class, null),
+    NHENTAI("nhentai", NHentaiDownloader.class, "https://i.nhentai.net/galleries/%s/%s.%s"),
+    OLD_NHENTAI("oldnhentai", OldNHentaiDownloader.class, null),
     NINEHENTAI("ninehentai", NineHentaiDownloader.class, "https://cdn.9hentai.ru/images/%s/%s.jpg"),
+    NHENTAICOM("nhentai.com", UnoriginalNHentaiDownloader.class, "https://nhentai.com/api/comics/%s/images?lang=%s&nsfw=true"),
+    PURURIN("pururin", PururinDownloader.class, "https://cdn.pururin.to/assets/images/data/%s/%s.jpg"),
     EXHENTAI("exhentai", ExHentaiDownloader.class, null),
-    IMHENTAI("imhentai", IMHentaiDownloader.class, null);
+    IMHENTAI("imhentai", IMHentaiDownloader.class, null),
+    ASMHENTAI("asmhentai", ASMHentaiDownloader.class, null),
+    HENTAIFOX("hentaifox", HentaiFoxDownloader.class, null);
 
     private final String name;
     private final String api;
