@@ -2,10 +2,9 @@ package cafe.ethyr.hentaidl.downloader.impl.gallery;
 
 import cafe.ethyr.hentaidl.downloader.composed.GalleryDownloader;
 import cafe.ethyr.hentaidl.downloader.factory.DownloaderType;
-import cafe.ethyr.hentaidl.helper.ExecutorHelper;
+import cafe.ethyr.hentaidl.executor.ExecutorHelper;
 import cafe.ethyr.hentaidl.helper.FileHelper;
 import cafe.ethyr.hentaidl.helper.SiteHelper;
-import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONArray;
@@ -24,9 +23,9 @@ public class UnoriginalNHentaiDownloader extends GalleryDownloader {
     public void downloadImages() {
         //Idk know why jsoup, urlconnection, httpclient returning 403
         //Thats why we need fucking ~4mb shit inside downloader
-        try (Response response = CLIENT.newCall(new Request.Builder()
+        try (Response response = SiteHelper.CLIENT.newCall(new Request.Builder()
                 .addHeader("User-Agent", SiteHelper.getUserAgent())
-                .url(HttpUrl.get(this.<String>getArgument("url")))
+                .url(this.<String>getArgument("url"))
                 .get()
                 .build()).execute()) {
 
@@ -37,7 +36,7 @@ public class UnoriginalNHentaiDownloader extends GalleryDownloader {
             JSONArray pages = json.getJSONArray("images");
 
             Path path = Path.of(getArgument("path"), FileHelper.fixPath(name));
-            FileHelper.deleteAndCreateDirectory(path.toFile());
+            FileHelper.deleteAndCreateDirectory(path);
             completionMessage(String.format("Downloaded %s\r", name));
 
             System.out.println("Name: " + name);
@@ -53,7 +52,10 @@ public class UnoriginalNHentaiDownloader extends GalleryDownloader {
                                 name, page, pageAmount, calculatePercent(page, pageAmount));
 
                         String url = object.getString("source_url");
-                        FileHelper.saveImage(FileHelper.computePath(path.toFile(), String.valueOf(page), SiteHelper.getExtension(url)), SiteHelper.openConnection(url));
+                        FileHelper.saveImage(
+                                path.resolve(page + "." + SiteHelper.getExtension(url)),
+                                SiteHelper.openConnection(url)
+                        );
                         completeJob();
                     } catch (Exception e) {
                         completeJob();

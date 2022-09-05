@@ -2,7 +2,7 @@ package cafe.ethyr.hentaidl.downloader.impl.other;
 
 import cafe.ethyr.hentaidl.downloader.Downloader;
 import cafe.ethyr.hentaidl.downloader.factory.DownloaderType;
-import cafe.ethyr.hentaidl.helper.ExecutorHelper;
+import cafe.ethyr.hentaidl.executor.ExecutorHelper;
 import cafe.ethyr.hentaidl.helper.FileHelper;
 import cafe.ethyr.hentaidl.helper.SiteHelper;
 import org.json.JSONObject;
@@ -52,32 +52,40 @@ public class NekosLifeDownloader extends Downloader {
 
     @Override
     public void downloadImages() {
-        Path path = Path.of(this.<String>getArgument("path"));
-        if (Files.notExists(path))
-            path.toFile().mkdirs();
+        try {
+            Path path = Path.of(this.<String>getArgument("path"));
+            if (Files.notExists(path))
+                Files.createDirectories(path);
 
-        int amount = getArgument("amount");
-        AtomicInteger index = new AtomicInteger();
+            int amount = getArgument("amount");
+            AtomicInteger index = new AtomicInteger();
 
-        jobs(amount);
-        for (int unsued = 0; unsued < amount; unsued++) {
-            ExecutorHelper.submit(() -> {
-                try {
-                    int i = index.getAndIncrement();
-                    System.out.printf("Downloading (%s) | Image: %s/%s (%s)\r", getArgument("tag"), i + 1, amount, calculatePercent(i + 1, amount));
+            jobs(amount);
+            for (int unsued = 0; unsued < amount; unsued++) {
+                ExecutorHelper.submit(() -> {
+                    try {
+                        int i = index.getAndIncrement();
+                        System.out.printf("Downloading (%s) | Image: %s/%s (%s)\r", getArgument("tag"), i + 1, amount, calculatePercent(i + 1, amount));
 
-                    JSONObject response = SiteHelper.toJson(getArgument("url"));
-                    if (response.has("url")) {
-                        System.out.print("Malformed response\r");
-                        String fileUrl = response.getString("url");
-                        FileHelper.saveImage(FileHelper.computePath(path.toFile(), String.valueOf(i) + ThreadLocalRandom.current().nextInt(), SiteHelper.getExtension(fileUrl)), SiteHelper.openConnection(fileUrl));
+                        JSONObject response = SiteHelper.toJson(getArgument("url"));
+                        if (response.has("url")) {
+                            System.out.print("Malformed response\r");
+                            String fileUrl = response.getString("url");
+                            FileHelper.saveImage(
+                                    path.resolve(i + ThreadLocalRandom.current().nextInt() + "." + SiteHelper.getExtension(fileUrl)),
+                                    SiteHelper.openConnection(fileUrl)
+                            );
+                        }
+                        completeJob();
+                    } catch (Exception e) {
+                        completeJob();
+                        handleException(e);
                     }
-                    completeJob();
-                } catch (Exception e) {
-                    completeJob();
-                    handleException(e);
-                }
-            });
+                });
+            }
+        } catch (Exception e) {
+            handleException(e);
+            done();
         }
     }
 

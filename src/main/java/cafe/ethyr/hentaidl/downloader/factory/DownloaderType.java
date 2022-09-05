@@ -103,6 +103,7 @@ public enum DownloaderType {
     EXHENTAI("exhentai", ExHentaiDownloader.class, null),
     IMHENTAI("imhentai", IMHentaiDownloader.class, null),
     ASMHENTAI("asmhentai", ASMHentaiDownloader.class, null),
+    HITOMI("hitomi", HitomiDownloader.class, null),
     HENTAIFOX("hentaifox", HentaiFoxDownloader.class, null);
 
     private final String name;

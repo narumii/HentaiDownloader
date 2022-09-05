@@ -1,6 +1,7 @@
 package cafe.ethyr.hentaidl.helper;
 
-import cafe.ethyr.hentaidl.booru.Site;
+import cafe.ethyr.hentaidl.data.booru.Site;
+import okhttp3.OkHttpClient;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 public final class SiteHelper {
 
+    public static final OkHttpClient CLIENT = new OkHttpClient();
     private static final String USER_AGENT = PropertiesHelper.getProperty("user_agent");
 
     public static int getPages(int value, int max) {

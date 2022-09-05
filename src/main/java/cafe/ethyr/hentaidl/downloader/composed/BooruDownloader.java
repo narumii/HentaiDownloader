@@ -1,10 +1,10 @@
 package cafe.ethyr.hentaidl.downloader.composed;
 
-import cafe.ethyr.hentaidl.booru.Image;
-import cafe.ethyr.hentaidl.booru.Site;
+import cafe.ethyr.hentaidl.data.booru.Image;
+import cafe.ethyr.hentaidl.data.booru.Site;
 import cafe.ethyr.hentaidl.downloader.Downloader;
 import cafe.ethyr.hentaidl.downloader.factory.DownloaderType;
-import cafe.ethyr.hentaidl.helper.ExecutorHelper;
+import cafe.ethyr.hentaidl.executor.ExecutorHelper;
 import cafe.ethyr.hentaidl.helper.FileHelper;
 import cafe.ethyr.hentaidl.helper.SiteHelper;
 import org.jsoup.Jsoup;
@@ -48,7 +48,7 @@ public abstract class BooruDownloader extends Downloader {
 
             Path path = Path.of(this.<String>getArgument("path"));
             if (Files.notExists(path))
-                path.toFile().mkdirs();
+                Files.createDirectories(path);
 
             AtomicInteger siteIndex = new AtomicInteger();
             for (Site ignored : sites) {
@@ -63,7 +63,7 @@ public abstract class BooruDownloader extends Downloader {
 
                                 System.out.printf("Downloading (%s) | Page: %s/%s, Image: %s/%s (%s)\r", this.<String>getArgument("search"), site.getPage() + 1, sites.size(), position + 1, site.getAmount(), calculatePercent(position + 1, site.getAmount()));
                                 getImage(position, body).ifPresent(image -> FileHelper.saveImage(
-                                        Path.of(path.toString(), image.getImage()), //lolibooru BEST
+                                        path.resolve(image.getImage()),
                                         SiteHelper.openConnection(image.getFileUrl())
                                 ));
                                 completeJob();

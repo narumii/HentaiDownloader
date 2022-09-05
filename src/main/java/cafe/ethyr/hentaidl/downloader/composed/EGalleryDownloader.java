@@ -1,7 +1,7 @@
 package cafe.ethyr.hentaidl.downloader.composed;
 
 import cafe.ethyr.hentaidl.downloader.factory.DownloaderType;
-import cafe.ethyr.hentaidl.helper.ExecutorHelper;
+import cafe.ethyr.hentaidl.executor.ExecutorHelper;
 import cafe.ethyr.hentaidl.helper.FileHelper;
 import cafe.ethyr.hentaidl.helper.SiteHelper;
 import org.jsoup.nodes.Document;
@@ -37,7 +37,7 @@ public abstract class EGalleryDownloader extends GalleryDownloader {
             int pages = SiteHelper.getPages(images, 40) == 0 ? 1 : SiteHelper.getPages(images, 40);
 
             Path path = Path.of(getArgument("path"), FileHelper.fixPath(name));
-            FileHelper.deleteAndCreateDirectory(path.toFile());
+            FileHelper.deleteAndCreateDirectory(path);
             completionMessage(String.format("Downloaded %s\r", name));
 
             System.out.println("Name: " + name);
@@ -66,7 +66,7 @@ public abstract class EGalleryDownloader extends GalleryDownloader {
                                         name, sitePage + 1, pages, fileIndex + 1, images, calculatePercent(fileIndex + 1, images));
 
                                 FileHelper.saveImage(
-                                        FileHelper.computePath(path.toFile(), String.valueOf(fileIndex), SiteHelper.getExtension(url)),
+                                        path.resolve(fileIndex + "." + SiteHelper.getExtension(url)),
                                         SiteHelper.openConnection(url)
                                 );
                                 completeJob();

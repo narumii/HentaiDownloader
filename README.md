@@ -60,6 +60,7 @@ If you want to know more check those link may help you\
 - [HentaiFox](https://hentaifox.com/)
 - [Pururin](https://pururin.to/)
 - [nHentai.com](https://nhentai.com/)
+- [Hitomi](https://hitomi.la/) ![](https://cdn.discordapp.com/emojis/801207878216056882.webp?size=32&quality=lossless)
 
 ---
 

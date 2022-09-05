@@ -1,6 +1,6 @@
 package cafe.ethyr.hentaidl.downloader.impl.booru;
 
-import cafe.ethyr.hentaidl.booru.Image;
+import cafe.ethyr.hentaidl.data.booru.Image;
 import cafe.ethyr.hentaidl.downloader.composed.BooruDownloader;
 import cafe.ethyr.hentaidl.downloader.factory.DownloaderType;
 import org.jsoup.nodes.Element;

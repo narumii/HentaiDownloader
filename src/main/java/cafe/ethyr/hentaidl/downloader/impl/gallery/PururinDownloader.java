@@ -3,7 +3,7 @@ package cafe.ethyr.hentaidl.downloader.impl.gallery;
 import cafe.ethyr.hentaidl.downloader.DownloadException;
 import cafe.ethyr.hentaidl.downloader.composed.GalleryDownloader;
 import cafe.ethyr.hentaidl.downloader.factory.DownloaderType;
-import cafe.ethyr.hentaidl.helper.ExecutorHelper;
+import cafe.ethyr.hentaidl.executor.ExecutorHelper;
 import cafe.ethyr.hentaidl.helper.FileHelper;
 import cafe.ethyr.hentaidl.helper.SiteHelper;
 import org.jsoup.Jsoup;
@@ -30,7 +30,7 @@ public class PururinDownloader extends GalleryDownloader {
             int pages = parsePages(body);
 
             Path path = Path.of(getArgument("path"), FileHelper.fixPath(name));
-            FileHelper.deleteAndCreateDirectory(path.toFile());
+            FileHelper.deleteAndCreateDirectory(path);
             completionMessage(String.format("Downloaded %s\r", name));
 
             System.out.println("Name: " + name);
@@ -47,9 +47,10 @@ public class PururinDownloader extends GalleryDownloader {
                                 name, page, pages, calculatePercent(page, pages));
 
                         String url = String.format(downloaderType.getApi(), id, page);
-                        FileHelper.saveImage(FileHelper.computePath(path.toFile(), String.valueOf(page), SiteHelper.getExtension(url)),
-                                SiteHelper.openConnection(url));
-
+                        FileHelper.saveImage(
+                                path.resolve(page + "." + SiteHelper.getExtension(url)),
+                                SiteHelper.openConnection(url)
+                        );
                         completeJob();
                     } catch (Exception e) {
                         completeJob();
@@ -65,10 +66,13 @@ public class PururinDownloader extends GalleryDownloader {
 
     @Override
     protected String fixUrl(String url) {
-        if (url.contains("pururin.to/gallery"))
+        if (url.contains("pururin.to/gallery")) {
             url = url.split("/gallery/")[1];
+            putArgument("id", url.split("/")[0]);
+        } else {
+            putArgument("id", url);
+        }
 
-        putArgument("id", url.split("/")[0]);
         return String.format(GALLERY_URL, url);
     }
 

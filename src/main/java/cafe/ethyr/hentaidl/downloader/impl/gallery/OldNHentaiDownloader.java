@@ -3,7 +3,7 @@ package cafe.ethyr.hentaidl.downloader.impl.gallery;
 import cafe.ethyr.hentaidl.downloader.DownloadException;
 import cafe.ethyr.hentaidl.downloader.composed.GalleryDownloader;
 import cafe.ethyr.hentaidl.downloader.factory.DownloaderType;
-import cafe.ethyr.hentaidl.helper.ExecutorHelper;
+import cafe.ethyr.hentaidl.executor.ExecutorHelper;
 import cafe.ethyr.hentaidl.helper.FileHelper;
 import cafe.ethyr.hentaidl.helper.PropertiesHelper;
 import cafe.ethyr.hentaidl.helper.SiteHelper;
@@ -51,7 +51,7 @@ public class OldNHentaiDownloader extends GalleryDownloader {
             String downloadUrl = composeDownloadUrl(gatherImageSource(body));
 
             Path path = Path.of(getArgument("path"), FileHelper.fixPath(name));
-            FileHelper.deleteAndCreateDirectory(path.toFile());
+            FileHelper.deleteAndCreateDirectory(path);
             completionMessage(String.format("Downloaded %s\r", name));
 
             System.out.println("Name: " + name);
@@ -67,8 +67,10 @@ public class OldNHentaiDownloader extends GalleryDownloader {
                                 name, page, pages, calculatePercent(page, pages));
 
                         String url = String.format(downloadUrl, page);
-                        FileHelper.saveImage(FileHelper.computePath(path.toFile(), String.valueOf(page), SiteHelper.getExtension(url)), SiteHelper.openConnection(url));
-
+                        FileHelper.saveImage(
+                                path.resolve(page + "." + SiteHelper.getExtension(url)),
+                                SiteHelper.openConnection(url)
+                        );
                         completeJob();
                     } catch (Exception e) {
                         completeJob();

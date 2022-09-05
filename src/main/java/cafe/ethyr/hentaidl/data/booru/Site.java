@@ -1,4 +1,4 @@
-package cafe.ethyr.hentaidl.booru;
+package cafe.ethyr.hentaidl.data.booru;
 
 public class Site {
 
