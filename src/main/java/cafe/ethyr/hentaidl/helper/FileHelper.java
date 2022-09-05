@@ -59,7 +59,7 @@ public final class FileHelper {
         }
 
         try (InputStream stream = connection.getInputStream()) {
-            Files.copy(stream, path, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(stream, path);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -71,7 +71,7 @@ public final class FileHelper {
         }
 
         try (inputStream) {
-            Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(inputStream, path);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

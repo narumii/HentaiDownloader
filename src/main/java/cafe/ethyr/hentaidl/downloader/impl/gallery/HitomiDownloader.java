@@ -48,7 +48,6 @@ public class HitomiDownloader extends GalleryDownloader {
             AtomicInteger index = new AtomicInteger();
 
             jobs(pageAmount);
-
             for (final Hitomi.HitomiFile file : hitomi.getFiles()) {
                 ExecutorHelper.limitSubmit(() -> {
                     try {
@@ -63,7 +62,6 @@ public class HitomiDownloader extends GalleryDownloader {
                                 .header("referer", "https://hitomi.la")
                                 .header("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36")
                                 .build();
-
 
                         try (Response response = SiteHelper.CLIENT.newCall(request).execute()) {
                             if (!response.isSuccessful())
