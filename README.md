@@ -1,5 +1,18 @@
 # HentaiDownloader
 
+**Update:** So hentaidownloader will have it second rewrite to third version. This update will introduce
+- Kemono scraper
+- Nozomi.la scraper
+- Various fixes
+- Rest api
+- Better and more clean and more flexible code (maybe plugin api?)
+- Depending on how hard it will be it could also introduce: fantia/patreon/fanbox/beta.sankaku scraping
+
+The goal is to not use selenium or similar software, but it might not be possible with my current skills.\
+If i find free time (and i will be happy with code quality), the v3 version will get it's own branch
+
+---
+
 Simple solution that allows you to download your favourite images from various sites.
 
 ---
